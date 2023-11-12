@@ -45,9 +45,9 @@ const login = async (req, res) => {
     const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
     const user = userCredential.user;
 
-    const uid = user.uid; // Hier holen wir die uid des authentifizierten Benutzers
+    const uid = user.uid;
 
-    res.json({ token: uid, success: true }); // Wir verwenden die uid als Token
+    res.json({ token: uid, success: true });
   } catch (error) {
     const errorCode = error.code;
     const errorMessage = error.message;
