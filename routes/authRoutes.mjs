@@ -1,12 +1,17 @@
-// authRoutes.mjs
 import express from 'express';
-const router = express.Router();
+const authrouter = express.Router();
 import authController from '../controllers/authController.mjs';
 
-router.post('/register', authController.register);
-router.post('/login', authController.login);
-router.post('/resetPassword', authController.resetPassword);
-//router.post('/signInWithGoogle', authController.signInWithGoogle);
+//Registrieren
+authrouter.post('/register', authController.register);
 
-export default router;
+//Login
+authrouter.post('/login', authController.login);
+
+//Passwort Zurücksetzen
+authrouter.post('/resetPassword', authController.resetPassword);
+
+
+
+export default authrouter;
 

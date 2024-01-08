@@ -1,4 +1,3 @@
-
 import express from 'express';
 import firebase from 'firebase/compat/app';
 import admin from "firebase-admin";
@@ -6,7 +5,6 @@ import serviceAccount from './firebaseKeys/serviceAccountKey.mjs';
 import config from './firebaseKeys/configKey.mjs';
 
 const app = express();
-
 
 try {
   // Firebase initialisieren
