@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"  # Der Build-Befehl, falls erforderlich (für Backend normalerweise nicht notwendig)
+  publish = "/"               # Das Root-Verzeichnis, das veröffentlicht werden soll
+
+[[redirects]]
+  from = "/*"
+  to = "/index.mjs"          # Die Startdatei für dein Backend
+  status = 200
+
+
