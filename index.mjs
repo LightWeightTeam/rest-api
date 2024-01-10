@@ -1,5 +1,11 @@
 import { app } from './app.mjs';
 
+const PORT = process.env.PORT || 3000; // Verwende den zugewiesenen Netlify-Port oder 3000 als Standard
+
+app.listen(PORT, () => {
+  console.log(`Server läuft auf http://localhost:${PORT}`);
+});
+/*
 const PORT = process.env.PORT || 3000;
 
 //app.listen(PORT, () => {
@@ -8,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server läuft auf http://0.0.0.0:${PORT}`);
 });
-
+*/
 
 import authrouter from './routes/authRoutes.mjs';
 app.use('/auth', authrouter);
