@@ -1,7 +1,9 @@
 
   [build]
   command = "npm run build"
-  publish = "public" # Hier den Ordner anpassen, in dem die Produktionsdateien generiert werden
+  publish = "public"
+  function = "netlify/functions"
+  skipFunctionsInstall = true
 
 
 [[redirects]]
