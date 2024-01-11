@@ -1,10 +1,10 @@
 [build]
-  command = "npm run build"  # Der Build-Befehl, falls erforderlich (für Backend normalerweise nicht notwendig)
-  publish = "/"               # Das Root-Verzeichnis, das veröffentlicht werden soll
+  command = "npm run build"  # Falls für Serverless-Funktionen ein Build erforderlich ist
+  functions = "functions"    # Das Verzeichnis, in dem deine Serverless-Funktionen liegen
+  publish = "public"         # Das Verzeichnis mit statischen Assets, falls vorhanden
 
 [[redirects]]
   from = "/*"
   to = "/index.mjs"          # Die Startdatei für dein Backend
   status = 200
-
 

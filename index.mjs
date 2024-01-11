@@ -1,10 +1,11 @@
 import { app } from './app.mjs';
 
-const PORT = process.env.PORT || 3000; // Verwende den zugewiesenen Netlify-Port oder 3000 als Standard
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server läuft auf http://localhost:${PORT}`);
 });
+
 /*
 const PORT = process.env.PORT || 3000;
 
@@ -16,14 +17,14 @@ app.listen(PORT, '0.0.0.0', () => {
 });
 */
 
-import authrouter from './routes/authRoutes.mjs';
-app.use('/auth', authrouter);
+import authrouter from './functions/auth/authRoutes.mjs';
+app.use('/.netlify/functions/auth', authrouter);
 
-import uidrouter from './routes/uidRoutes.mjs';
-app.use('/uid', uidrouter);
+import uidrouter from './functions/uid/uidRoutes.mjs';
+app.use('/.netlify/functions/uid', uidrouter);
 
-import nutritionrouter from './routes/nutritionRoutes.mjs';
-app.use('/nutrition', nutritionrouter);
+import nutritionrouter from './functions/nutrition/nutritionRoutes.mjs';
+app.use('/.netlify/functions/nutrition', nutritionrouter);
 
-import trainingrouter from './routes/trainingRoutes.mjs';
-app.use('/training', trainingrouter);
+import trainingrouter from './functions/training/trainingRoutes.mjs';
+app.use('/.netlify/functions/training', trainingrouter);
