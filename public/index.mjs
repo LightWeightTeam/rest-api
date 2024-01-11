@@ -17,14 +17,14 @@ app.listen(PORT, '0.0.0.0', () => {
 });
 */
 
-import authrouter from './functions/auth/authRoutes.mjs';
+import authrouter from '../functions/auth/authRoutes.mjs';
 app.use('/.netlify/functions/auth', authrouter);
 
-import uidrouter from './functions/uid/uidRoutes.mjs';
+import uidrouter from '../functions/uid/uidRoutes.mjs';
 app.use('/.netlify/functions/uid', uidrouter);
 
-import nutritionrouter from './functions/nutrition/nutritionRoutes.mjs';
+import nutritionrouter from '../functions/nutrition/nutritionRoutes.mjs';
 app.use('/.netlify/functions/nutrition', nutritionrouter);
 
-import trainingrouter from './functions/training/trainingRoutes.mjs';
+import trainingrouter from '../functions/training/trainingRoutes.mjs';
 app.use('/.netlify/functions/training', trainingrouter);

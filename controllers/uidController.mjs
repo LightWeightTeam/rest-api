@@ -1,4 +1,4 @@
-import { admin } from '../app.mjs';
+import { admin } from '../public/app.mjs';
 
 const checkUid = async (req, res) => {
   const { uid } = req.query;
