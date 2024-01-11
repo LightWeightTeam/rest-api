@@ -1,7 +1,7 @@
 [build]
   [build]
   command = "npm run build"
-  publish = "dist" # Hier den Ordner anpassen, in dem die Produktionsdateien generiert werden
+  publish = "public" # Hier den Ordner anpassen, in dem die Produktionsdateien generiert werden
 
 
 [[redirects]]
