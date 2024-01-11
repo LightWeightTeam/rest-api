@@ -5,10 +5,9 @@
   "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "dev": "netlify dev",
-    "start": "node public/index.mjs",
     "build": "npm run build"
   },
+  
   
   
   
