@@ -3,7 +3,29 @@
   publish = "public"
 
 [[redirects]]
-  from = "/*"
-  to = "/index.mjs"
+  from = "/auth/*"
+  to = "/.netlify/functions/auth/:splat"
   status = 200
+
+[[redirects]]
+  from = "/uid/*"
+  to = "/.netlify/functions/uid/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/nutrition/*"
+  to = "/.netlify/functions/nutrition/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/training/*"
+  to = "/.netlify/functions/training/:splat"
+  status = 200
+
+[dev]
+  functions = "netlify/functions"
+  port = 8888
+
+
+
 

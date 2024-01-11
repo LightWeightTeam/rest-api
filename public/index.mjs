@@ -1,4 +1,15 @@
+// public/index.mjs
+
 import { app } from './app.mjs';
+import authrouter from '../netlify/functions/auth/authRoutes.mjs';
+import uidrouter from '../netlify/functions/uid/uidRoutes.mjs';
+import nutritionrouter from '../netlify/functions/nutrition/nutritionRoutes.mjs';
+import trainingrouter from '../netlify/functions/training/trainingRoutes.mjs';
+
+app.use('/.netlify/functions/auth', authrouter);
+app.use('/.netlify/functions/uid', uidrouter);
+app.use('/.netlify/functions/nutrition', nutritionrouter);
+app.use('/.netlify/functions/training', trainingrouter);
 
 const PORT = process.env.PORT || 3000;
 
@@ -6,25 +17,3 @@ app.listen(PORT, () => {
   console.log(`Server läuft auf http://localhost:${PORT}`);
 });
 
-/*
-const PORT = process.env.PORT || 3000;
-
-//app.listen(PORT, () => {
-//  console.log(`Server läuft auf http://localhost:${PORT}`);
-//});
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server läuft auf http://0.0.0.0:${PORT}`);
-});
-*/
-
-import authrouter from '../functions/auth/authRoutes.mjs';
-app.use('/.netlify/functions/auth', authrouter);
-
-import uidrouter from '../functions/uid/uidRoutes.mjs';
-app.use('/.netlify/functions/uid', uidrouter);
-
-import nutritionrouter from '../functions/nutrition/nutritionRoutes.mjs';
-app.use('/.netlify/functions/nutrition', nutritionrouter);
-
-import trainingrouter from '../functions/training/trainingRoutes.mjs';
-app.use('/.netlify/functions/training', trainingrouter);

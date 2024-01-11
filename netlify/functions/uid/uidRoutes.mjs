@@ -1,6 +1,6 @@
 import express from 'express';
 const uidrouter = express.Router();
-import uidController from '../controllers/uidController.mjs';
+import uidController from './uidController.mjs';
 
 
 uidrouter.get('/checkUid', uidController.checkUid);

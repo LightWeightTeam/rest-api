@@ -1,6 +1,6 @@
 import express from 'express';
 import firebase from 'firebase/compat/app';
-import admin from "firebase-admin";
+import admin from 'firebase-admin';
 import serviceAccount from '../firebaseKeys/serviceAccountKey.mjs';
 import config from '../firebaseKeys/configKey.mjs';
 
@@ -14,6 +14,7 @@ try {
   console.error('Fehler beim Initialisieren von Firebase:', error);
 }
 
+// Verschiebe express.json() hierher, bevor Firebase initialisiert wird
 app.use(express.json());
 
 admin.initializeApp({
@@ -22,3 +23,4 @@ admin.initializeApp({
 });
 
 export { app, admin };
+

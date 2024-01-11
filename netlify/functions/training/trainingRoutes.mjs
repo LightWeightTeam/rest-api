@@ -1,6 +1,6 @@
 import express from 'express';
 const trainingrouter = express.Router();
-import trainingController from '../../controllers/trainingController.mjs';
+import trainingController from './trainingController.mjs';
 
 
 trainingrouter.get('/getCurrentDate', async (req, res) => {

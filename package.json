@@ -5,10 +5,11 @@
   "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "netlify dev",
     "start": "node public/index.mjs",
-    "build": ""
+    "build": "npm run build"
   },
+  
   
   
   
