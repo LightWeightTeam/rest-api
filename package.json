@@ -5,7 +5,7 @@
   "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "build": "node public/index.mjs",
+    "build": "node public/index.mjs &",
     "start": "node public/index.mjs"
   },
   
