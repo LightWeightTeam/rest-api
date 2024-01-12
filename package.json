@@ -5,7 +5,13 @@
   "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "vercel-build": "npm install"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
   },
   "keywords": [],
   "author": "",
@@ -18,3 +24,4 @@
     "xml2js": "^0.6.2"
   }
 }
+
