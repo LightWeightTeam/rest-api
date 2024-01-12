@@ -8,20 +8,36 @@
   ],
   "routes": [
     {
-      "src": "/auth/.*",
+      "src": "/controllers/authController.mjs",
       "dest": "/controllers/authController.mjs"
     },
     {
-      "src": "/uid/.*",
-      "dest": "/controllers/uidController.mjs"
-    },
-    {
-      "src": "/nutrition/.*",
+      "src": "/controllers/nutritionController.mjs",
       "dest": "/controllers/nutritionController.mjs"
     },
     {
-      "src": "/training/.*",
+      "src": "/controllers/trainingController.mjs",
       "dest": "/controllers/trainingController.mjs"
+    },
+    {
+      "src": "/controllers/uidController.mjs",
+      "dest": "/controllers/uidController.mjs"
+    },
+    {
+      "src": "/routes/authRoutes.mjs",
+      "dest": "/routes/authRoutes.mjs"
+    },
+    {
+      "src": "/routes/nutritionRoutes.mjs",
+      "dest": "/routes/nutritionRoutes.mjs"
+    },
+    {
+      "src": "/routes/trainingRoutes.mjs",
+      "dest": "/routes/trainingRoutes.mjs"
+    },
+    {
+      "src": "/routes/uidRoutes.mjs",
+      "dest": "/routes/uidRoutes.mjs"
     },
     {
       "src": "/.*",
@@ -29,4 +45,5 @@
     }
   ]
 }
+
 
