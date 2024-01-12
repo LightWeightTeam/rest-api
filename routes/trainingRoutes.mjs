@@ -1,3 +1,4 @@
+
 import express from 'express';
 const trainingrouter = express.Router();
 import trainingController from '../controllers/trainingController.mjs';

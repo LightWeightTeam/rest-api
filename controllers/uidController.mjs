@@ -1,3 +1,4 @@
+/*
 import { admin } from '../app.mjs';
 
 const checkUid = async (req, res) => {
@@ -20,3 +21,4 @@ const checkUid = async (req, res) => {
 export default {
   checkUid
 };
+*/

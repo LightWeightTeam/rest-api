@@ -1,3 +1,4 @@
+/*
 import express from 'express';
 const nutritionrouter = express.Router();
 import nutritionController from '../controllers/nutritionController.mjs';
@@ -81,3 +82,4 @@ nutritionrouter.post('/saveNutritionData', nutritionController.saveNutritionData
 
 export default nutritionrouter;
 
+*/

@@ -1,3 +1,4 @@
+/*
 import express from 'express';
 const authrouter = express.Router();
 import authController from '../controllers/authController.mjs';
@@ -14,4 +15,4 @@ authrouter.post('/resetPassword', authController.resetPassword);
 
 
 export default authrouter;
-
+*/
