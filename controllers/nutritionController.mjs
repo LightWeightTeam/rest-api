@@ -1,9 +1,9 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import config from '../../../firebaseKeys/configKey.mjs';
+import config from '../firebaseKeys/configKey.mjs';
 import axios from 'axios';
-import uidController from '../uid/uidController.mjs';
+import uidController from './uidController.mjs';
 import crypto from 'crypto';
 import querystring from 'querystring';
 

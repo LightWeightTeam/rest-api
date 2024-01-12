@@ -1,6 +1,6 @@
 import express from 'express';
 const nutritionrouter = express.Router();
-import nutritionController from './nutritionController.mjs';
+import nutritionController from '../controllers/nutritionController.mjs';
 
 // Route Suche der Lebensmittel
 nutritionrouter.get('/searchFoodItems', async (req, res) => {
