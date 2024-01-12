@@ -3,7 +3,7 @@ import express from 'express';
 const trainingrouter = express.Router();
 import trainingController from '../controllers/trainingController.mjs';
 
-
+/*
 trainingrouter.get('/getCurrentDate', async (req, res) => {
     const { uid } = req.query;
 
@@ -15,15 +15,16 @@ trainingrouter.get('/getCurrentDate', async (req, res) => {
         res.status(500).json({ error: 'Fehler beim Abrufen der Mahlzeiten-Daten' });
     }
 });
+*/
 
 
 
 
 
-trainingrouter.post('/saveTrainingData', trainingController.saveTrainingData);
-trainingrouter.post('/getTrainingData', trainingController.getTrainingData);
+//trainingrouter.post('/saveTrainingData', trainingController.saveTrainingData);
+//trainingrouter.post('/getTrainingData', trainingController.getTrainingData);
 trainingrouter.post('/getTrainingSplitData', trainingController.getTrainingSplitData);
-trainingrouter.post('/getTrainingDataForDay', trainingController.getTrainingDataForDay);
+//trainingrouter.post('/getTrainingDataForDay', trainingController.getTrainingDataForDay);
 
 export default trainingrouter;
 

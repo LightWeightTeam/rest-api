@@ -35,7 +35,7 @@ if (!admin.apps.length) {
 
 
 
-
+/*
 const saveTrainingData = async (req, res) => {
   try {
     const { uid, selectedGoal, selectedLevel, selectedSplit, currentDate } = req.body;
@@ -241,7 +241,7 @@ const getCurrentDate = async (uid) => {
     throw error;
   }
 };
-
+*/
 
 
 const getTrainingSplitData = async (req, res) => {
@@ -313,11 +313,11 @@ const getTrainingSplitData = async (req, res) => {
 
 
 export default {
-  saveTrainingData,
-  getTrainingData,
+  //saveTrainingData,
+  //getTrainingData,
   getTrainingSplitData,
-  getTrainingDataForDay,
-  getCurrentDate
+  //getTrainingDataForDay,
+  //getCurrentDate
 };
 
 
