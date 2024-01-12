@@ -8,7 +8,7 @@ const createSampleData = (req, res) => {
   res.json({ message: 'POST-Anfrage erfolgreich', data });
 };
 
-export {
+export default{
   getSampleData,
   createSampleData,
 };
