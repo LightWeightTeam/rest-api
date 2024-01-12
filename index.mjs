@@ -1,17 +1,20 @@
-import express from 'express';
+// index.js
+const express = require('express');
+
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware für JSON-Daten
 app.use(express.json());
 
-// Routen
-import sampleRoute from './routes/sampleRoute.mjs';
-app.use('/api/sample', sampleRoute);
-
-// Starte den Server
-app.listen(port, () => {
-  console.log(`Server läuft auf http://localhost:${port}`);
+app.get('/', (req, res) => {
+  res.json({ message: 'Hello, this is your Express API!' });
 });
 
+app.post('/api/data', (req, res) => {
+  const data = req.body;
+  res.json({ message: 'Data received successfully', data });
+});
 
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
