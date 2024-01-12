@@ -8,8 +8,25 @@
   ],
   "routes": [
     {
+      "src": "/auth/.*",
+      "dest": "/controllers/authController.mjs"
+    },
+    {
+      "src": "/uid/.*",
+      "dest": "/controllers/uidController.mjs"
+    },
+    {
+      "src": "/nutrition/.*",
+      "dest": "/controllers/nutritionController.mjs"
+    },
+    {
+      "src": "/training/.*",
+      "dest": "/controllers/trainingController.mjs"
+    },
+    {
       "src": "/.*",
       "dest": "/index.mjs"
     }
   ]
 }
+
