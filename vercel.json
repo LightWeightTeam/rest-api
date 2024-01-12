@@ -8,18 +8,11 @@
   ],
   "routes": [
     {
-      "src": "/controllers/(.*)",
-      "dest": "/controllers/$1"
-    },
-    {
-      "src": "/routes/(.*)",
-      "dest": "/routes/$1"
-    },
-    {
       "src": "/.*",
       "dest": "/index.mjs"
     }
   ]
 }
+
 
 
