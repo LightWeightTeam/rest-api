@@ -1,20 +1,22 @@
-// index.js
-import express from 'express';
+import { app } from './app.mjs';
+import cors from 'cors';
 
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello, this is your Express API!' });
-});
-
-app.post('/api/data', (req, res) => {
-  const data = req.body;
-  res.json({ message: 'Data received successfully', data });
-});
+const port = 8000;
+app.use(cors())
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server läuft auf ${port}`);
 });
+
+
+import authrouter from './routes/authRoutes.mjs';
+app.use('/auth', authrouter);
+
+import uidrouter from './routes/uidRoutes.mjs';
+app.use('/uid', uidrouter);
+
+import nutritionrouter from './routes/nutritionRoutes.mjs';
+app.use('/nutrition', nutritionrouter);
+
+import trainingrouter from './routes/trainingRoutes.mjs';
+app.use('/training', trainingrouter);

@@ -1,5 +1,15 @@
 {
-  "version": 2,
-  "builds": [{ "src": "index.mjs", "use": "@vercel/node" }],
-  "routes": [{ "handle": "filesystem" }]
+    "version":2,
+    "builds":[
+        {
+            "src":"./index.mjs",
+            "use":"@now/node"
+        }
+    ],
+    "route":[
+        {
+            "src":"/(.*)",
+            "dest":"index.mjs"
+        }
+    ]
 }
