@@ -1,9 +1,17 @@
-import { app } from './app.mjs';
+import express from 'express';
+const app = express();
+const port = process.env.PORT || 3000;
 
-import trainingrouter from './routes/trainingRoutes.mjs';
+// Middleware für JSON-Daten
+app.use(express.json());
 
+// Routen
+import sampleRoute from './routes/sampleRoute.mjs';
+app.use('/api/sample', sampleRoute);
 
-app.use('/training', trainingrouter);
+// Starte den Server
+app.listen(port, () => {
+  console.log(`Server läuft auf http://localhost:${port}`);
+});
 
-export default app;
 
