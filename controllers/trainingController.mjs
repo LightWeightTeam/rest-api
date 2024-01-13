@@ -3,7 +3,7 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/auth';
 import config from '../firebaseKeys/configKey.mjs';
 import admin from 'firebase-admin';
-import serviceAccount from '../firebaseKeys/serviceAccountKey.mjs';
+
 
 
 
@@ -12,26 +12,6 @@ const clientApp = firebase.initializeApp(config);
 const adminApp = admin.app();
 
 
-
-/*
-let clientApp;
-let adminApp;
-
-if (!firebase.apps.length) {
-  clientApp = firebase.initializeApp(config);
-} else {
-  clientApp = firebase.app(); // Verwenden Sie die vorhandene App, wenn sie bereits initialisiert wurde
-}
-
-if (!admin.apps.length) {
-  adminApp = admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-} else {
-  adminApp = admin.app(); // Verwenden Sie die vorhandene App, wenn sie bereits initialisiert wurde
-}
-
-*/
 
 
 
