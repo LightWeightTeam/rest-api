@@ -1,12 +1,13 @@
 import { app } from './app.mjs';
 import cors from 'cors';
 
-const port = 8000;
 app.use(cors())
 
+const port = process.env.PORT || 8000;
 app.listen(port, () => {
-  console.log(`Server läuft auf ${port}`);
+    console.log(`Server läuft auf ${port}`);
 });
+
 
 
 import authrouter from './routes/authRoutes.mjs';
