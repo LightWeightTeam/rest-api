@@ -6,7 +6,8 @@ import axios from 'axios';
 import uidController from './uidController.mjs';
 import crypto from 'crypto';
 import querystring from 'querystring';
-
+import dotenv from 'dotenv';
+dotenv.config();
 
 import { parseString } from 'xml2js';
 
@@ -79,12 +80,12 @@ const saveBasicCalories = async (req, res) => {
 
 //Suchfunktion zur erhalten der Nahrungsdaten
 async function searchFoodItems(foodName, pageNumber) {
-  const apiKey = '7279a0313ce94d15bdce1e1cc465f47c'; // Ihr FatSecret Consumer Key
-  const apiSecret = '9cb1b1db0631429f87ed3d8f894c938a'; // Ihr FatSecret Consumer Secret
+  const apiKeyFatSecret = process.env.apiKeyFatSecret; // Ihr FatSecret Consumer Key
+  const apiSecret = process.env.apiSecret; // Ihr FatSecret Consumer Secret
 
   //Vorgeschriebenen übergabe Parameter von FatSecret
   const oauthParams = {
-    oauth_consumer_key: apiKey,
+    oauth_consumer_key: apiKeyFatSecret,
     oauth_signature_method: 'HMAC-SHA1',
     oauth_version: '1.0',
     oauth_nonce: Math.random().toString(36).substring(2),
@@ -99,14 +100,14 @@ async function searchFoodItems(foodName, pageNumber) {
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(oauthParams[key])}`)
     .join('&');
 
-  const baseString = `POST&${encodeURIComponent('https://platform.fatsecret.com/rest/server.api')}&${encodeURIComponent(sortedParams)}`;
+  const baseString = `POST&${encodeURIComponent(process.env.fatsecret_uri)}&${encodeURIComponent(sortedParams)}`;
   const signingKey = `${encodeURIComponent(apiSecret)}&`;
   const signature = crypto.createHmac('sha1', signingKey).update(baseString).digest('base64');
 
   oauthParams.oauth_signature = signature;
 
   try {
-    const response = await axios.post('https://platform.fatsecret.com/rest/server.api', null, {
+    const response = await axios.post(process.env.fatsecret_uri, null, {
       params: oauthParams
     });
 
