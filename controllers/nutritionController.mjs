@@ -292,6 +292,7 @@ const updateNutriSum = async (uid, selectedDate) => {
   }
 };
 
+
 //Anzeige der Meals
 const getMeal = async (uid, selectedDate, mealType) => {
   try {
