@@ -173,6 +173,7 @@ const saveNutritionData = async (req, res) => {
           protein: proteinValue,
           foodName: foodNameValue,
           amount: amountValue,
+          mealId: mealId,
         });
         //Aufruf um die Summe von dem MealTyp zu aktualisieren
         await updateSumMealType(uid, selectedDate, mealType)
