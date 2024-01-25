@@ -178,7 +178,7 @@ const saveNutritionData = async (req, res) => {
         //Aufruf um die Summe von dem MealTyp zu aktualisieren
         await updateSumMealType(uid, selectedDate, mealType)
         //Aufruf damit die komplette summe aktualisiert wird
-        updateNutriSum(uid,selectedDate)
+        await updateNutriSum(uid,selectedDate)
         return res.status(200).json({ message: 'Nutritional data successfully saved in Firestore', success: true });
         
       }
