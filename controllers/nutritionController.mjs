@@ -173,7 +173,6 @@ const saveNutritionData = async (req, res) => {
           protein: proteinValue,
           foodName: foodNameValue,
           amount: amountValue,
-          mealId: mealId,
         });
         //Aufruf um die Summe von dem MealTyp zu aktualisieren
         await updateSumMealType(uid, selectedDate, mealType)
@@ -383,7 +382,52 @@ const deleteMeal = async (uid, selectedDate, mealType, mealId) => {
   }
 };
 
+const calculateNutritionIntake = async (uid, selectedDate) => {
+  try {
+    console.log('Received UID:', uid);
+    console.log('Received selectedDate:', selectedDate);
 
+    
+    const nutritionRef = firebase.firestore().collection('users').doc(uid).collection('nutrition').doc('food_values');
+    const selectedDateRef = nutritionRef.collection(selectedDate);
+
+
+    const basicCaloriesData = await nutritionRef.get();
+    const basicCalories = basicCaloriesData.data()?.basic_calories || 0;
+
+
+    const burnedCaloriesData = await selectedDateRef.doc('nutriSum').get();
+    const burnedCalories = burnedCaloriesData.data()?.burnedCalories || 0;
+
+
+    const totalCalories = basicCalories + burnedCalories;
+
+    const proteinIntake = totalCalories * 0.25;
+    const fatIntake = totalCalories * 0.35;
+    const carbIntake = totalCalories * 0.40;
+
+    const caloriesPerGram = {
+      protein: 4,
+      fat: 9,
+      carb: 4,
+    };
+
+
+    const proteinIntakeGrams = proteinIntake / caloriesPerGram.protein;
+    const fatIntakeGrams = fatIntake / caloriesPerGram.fat;
+    const carbIntakeGrams = carbIntake / caloriesPerGram.carb;
+
+
+    console.log('Protein Intake:', proteinIntakeGrams);
+    console.log('Fat Intake:', fatIntakeGrams);
+    console.log('Carb Intake:', carbIntakeGrams);
+
+    return { proteinIntakeGrams, fatIntakeGrams, carbIntakeGrams };
+  } catch (error) {
+    console.error('Error calculating nutrition intake:', error);
+    throw error;
+  }
+};
 
 export default {
   saveBasicCalories,
@@ -392,5 +436,6 @@ export default {
   getMeal,
   getMealTypeSum,
   getMealSum,
-  deleteMeal
+  deleteMeal,
+  calculateNutritionIntake
 };

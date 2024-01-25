@@ -67,7 +67,18 @@ nutritionrouter.get('/deleteMeal', async (req, res) => {
     }
 });
 
+// Neue Route für die berechnete Protein-, Fett- und Kohlenhydrataufnahme hinzufügen
+nutritionrouter.get('/calculateNutritionIntake', async (req, res) => {
+    const { uid, selectedDate } = req.query;
 
+    try {
+        const nutritionIntake = await nutritionController.calculateNutritionIntake(uid, selectedDate);
+        res.status(200).json(nutritionIntake);
+    } catch (error) {
+        console.error('Error calculating nutrition intake:', error);
+        res.status(500).json({ error: 'Error calculating nutrition intake' });
+    }
+});
 
 //Kalorien Berechnen und speichern
 nutritionrouter.post('/saveBasicCalories', nutritionController.saveBasicCalories);
