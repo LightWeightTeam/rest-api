@@ -69,10 +69,7 @@ nutritionrouter.get('/deleteMeal', async (req, res) => {
 
 
 
-//Kalorien Berechnen
-nutritionrouter.post('/calculateCalories', nutritionController.basicCalories);
-
-//Kalorien Speichern
+//Kalorien Berechnen und speichern
 nutritionrouter.post('/saveBasicCalories', nutritionController.saveBasicCalories);
 
 //Nahrung Speichern

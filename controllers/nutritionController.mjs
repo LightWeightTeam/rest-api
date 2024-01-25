@@ -30,42 +30,40 @@ const parseXmlToJson = (xmlData) => {
 const app = firebase.initializeApp(config);
 
 
-//Berechnung von Grund Kalorien (Muss wahrscheinlich noch überarbeitet werden)
-const basicCalories = async (req, res) => {
 
-  //Empfängt Geschlecht, Alter, Gewicht, Größe von Flutter
-  const { geschlecht, alter, gewicht, groesse } = req.body;
 
-    let basicCalories = 0;
-    try{
-      if (geschlecht === 'männlich') {
-        basicCalories = 88.362 + (13.397 * gewicht) + (4.799 * groesse) - (5.677 * alter);
-      } else if (geschlecht === 'weiblich') {
-        basicCalories = 447.593 + (9.247 * gewicht) + (3.098 * groesse) - (4.330 * alter);
-      }
-      //Berechnete Daten zurückgeben zu Flutter
-      res.json({ basicCalories, success: true });
-    }catch(error)
-    {
-      res.status(401).json({ message: `Error calculating calories ${errorCode} - ${errorMessage}`, success: false });
-    }
-}
-
-//Grundvariablen zu Firestore hinzufügen (Überarbeiten die basic_calories sollen nicht hin und her übergeben werden)
+//Grundvariablen zu Firestore hinzufügen 
 const saveBasicCalories = async (req, res) => {
   try {
-    //Empfängt die Uid und die Basic Calories von Flutter
-    const { uid, basic_calories } = req.body;
 
-    if (!uid || !basic_calories) {
-      return res.status(400).json({ message: 'Missing data: uid or basic calories missing', success: false });
+    const { uid, gender, age, weight, height } = req.body;
+
+    let basicCalories = 0;
+
+    if (gender === 'männlich') {
+      basicCalories = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+    } else if (gender === 'weiblich') {
+      basicCalories = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
     }
+
+    if (!uid) {
+      return res.status(400).json({ message: 'Missing data: uid missing', success: false });
+    }
+
 
     //Update der basic_calories in Firebase
     await firebase.firestore().collection('users').doc(uid)
       .collection('nutrition').doc('food_values')
       .update({
-        'basic_calories': basic_calories
+        'basic_calories': basicCalories
+      });
+
+      await firebase.firestore().collection('users').doc(uid)
+      .update({
+        'gender': gender,
+        'age': age,
+        'weight': weight,
+        'height': height
       });
 
     return res.status(200).json({ message: 'Base calories successfully saved in Firestore', success: true });
@@ -388,7 +386,6 @@ const deleteMeal = async (uid, selectedDate, mealType, mealId) => {
 
 
 export default {
-  basicCalories,
   saveBasicCalories,
   searchFoodItems,
   saveNutritionData,

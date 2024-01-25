@@ -19,7 +19,11 @@ const register = async (req, res) => {
     try {
       // Email wird in users -> uid gespeichert
       await firebase.firestore().collection('users').doc(uid).set({
-        'email': email
+        'email': email,
+        'gender': "null",
+        'age': 0,
+        'weight': 0,
+        'height': 0
       });
 
       // Basic_calories wird beim erstellen des accounts bereits erstellt in users -> uid -> nutrition -> food_values
