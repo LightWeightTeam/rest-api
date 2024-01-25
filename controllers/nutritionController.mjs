@@ -257,6 +257,20 @@ const updateNutriSum = async (uid, selectedDate) => {
 
     const nutriSumRef = selectedDateRef.doc('nutriSum');
 
+    // Überprüfen, ob nutriSum existiert
+    const nutriSumSnapshot = await nutriSumRef.get();
+
+    if (!nutriSumSnapshot.exists) {
+      // Wenn nutriSum nicht existiert, erstelle es
+      await nutriSumRef.set({
+        totalCalories: 0,
+        totalCarbs: 0,
+        totalFat: 0,
+        totalProtein: 0
+      });
+    }
+
+    // Aktualisieren der Werte in nutriSum
     await nutriSumRef.set(
       {
         totalCalories,
@@ -277,7 +291,6 @@ const updateNutriSum = async (uid, selectedDate) => {
     console.error('Error updating nutriSum:', error);
   }
 };
-
 
 //Anzeige der Meals
 const getMeal = async (uid, selectedDate, mealType) => {
