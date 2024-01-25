@@ -287,8 +287,10 @@ const updateNutriSum = async (uid, selectedDate) => {
       totalFat,
       totalProtein
     });
+
   } catch (error) {
     console.error('Error updating nutriSum:', error);
+    throw error;
   }
 };
 
