@@ -290,6 +290,61 @@ const getTrainingSplitData = async (req, res) => {
 };
 
 
+const saveTrainingDataToFirebase = async (req, res) => {
+  try {
+  const {
+    uid,
+    weight,
+    rep,
+    set,
+    exerciseID,
+    splitName,
+    selectedDate,
+  } = req.body;
+
+  if (!uid || !weight || !rep || !set || !exerciseID || !splitName || !selectedDate) {
+    return res.status(400).json({ message: 'Fehlende Daten', success: false });
+  }
+
+  const userRef = firebase.firestore().collection('users').doc(uid);
+  const trainingRef = userRef.collection('training').doc(selectedDate);
+  const splitRef = trainingRef.collection(splitName);
+  const exerciseRef = splitRef.doc(exerciseID);
+
+  const existingExerciseDoc = await exerciseRef.get();
+
+  if (existingExerciseDoc.exists) {
+    // If the exercise document already exists, add a new one with an incremented name
+    let counter = 1;
+    let newExerciseRef;
+
+    do {
+      const incrementedExerciseID = `${exerciseID}${counter}`;
+      newExerciseRef = splitRef.doc(incrementedExerciseID);
+      counter++;
+    } while ((await newExerciseRef.get()).exists);
+
+    await newExerciseRef.set({
+      weight,
+      rep,
+      set,
+    });
+  } else {
+    // If the exercise document does not exist, create a new one
+    await exerciseRef.set({
+      weight,
+      rep,
+      set,
+    });
+  }
+
+  return res.status(200).json({ message: 'Daten erfolgreich gespeichert', success: true });
+} catch (error) {
+  console.error('Fehler beim Speichern der Daten:', error);
+  return res.status(500).json({ message: 'Interner Serverfehler', success: false });
+}
+}
+
 
 
 export default {
@@ -297,7 +352,8 @@ export default {
   getTrainingData,
   getTrainingSplitData,
   getTrainingDataForDay,
-  getCurrentDate
+  getCurrentDate,
+  saveTrainingDataToFirebase
 };
 
 

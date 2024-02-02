@@ -18,7 +18,7 @@ trainingrouter.get('/getCurrentDate', async (req, res) => {
 
 
 
-
+trainingrouter.post('/saveTrainingDataToFirebase', trainingController.saveTrainingDataToFirebase);
 trainingrouter.post('/saveTrainingData', trainingController.saveTrainingData);
 trainingrouter.post('/getTrainingData', trainingController.getTrainingData);
 trainingrouter.post('/getTrainingSplitData', trainingController.getTrainingSplitData);
