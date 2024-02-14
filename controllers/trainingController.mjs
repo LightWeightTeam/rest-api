@@ -330,6 +330,8 @@ const saveTrainingDataToFirebase = async (req, res) => {
 const getTrainingDataFromFirebase = async (req, res) => {
   try {
     const { uid, selectedDate } = req.body;
+    console.log(uid);
+    console.log(selectedDate);
 
     if (!uid || !selectedDate) {
       return res.status(400).json({ message: 'Fehlende Daten', success: false });
