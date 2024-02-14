@@ -5,15 +5,8 @@ import config from '../firebaseKeys/configKey.mjs';
 import admin from 'firebase-admin';
 
 
-
-
-
 const clientApp = firebase.initializeApp(config);
 const adminApp = admin.app();
-
-
-
-
 
 
 const saveTrainingData = async (req, res) => {
@@ -289,7 +282,7 @@ const getTrainingSplitData = async (req, res) => {
   }
 };
 
-
+//Hier soll vielleicht noch überprüft werden ob savedTraining als Doc bereits exisitiert.
 const saveTrainingDataToFirebase = async (req, res) => {
   try {
     const {
@@ -334,6 +327,63 @@ const saveTrainingDataToFirebase = async (req, res) => {
   }
 }
 
+const getTrainingDataFromFirebase = async (req, res) => {
+  try {
+    const { uid, selectedDate } = req.body;
+
+    if (!uid || !selectedDate) {
+      return res.status(400).json({ message: 'Fehlende Daten', success: false });
+    }
+
+    const userRef = firebase.firestore().collection('users').doc(uid);
+    const trainingRef = userRef.collection('training').doc('savedTraining').collection(selectedDate);
+
+    const snapshot = await trainingRef.get();
+
+    if (snapshot.empty) {
+      return res.status(404).json({ message: 'Keine Daten gefunden', success: false });
+    }
+
+    const data = [];
+
+    snapshot.forEach((splitDoc) => {
+      const splitName = splitDoc.id;
+      const exercises = [];
+
+      splitDoc.ref.collectionGroup('*').get().then((exerciseSnapshot) => {
+        exerciseSnapshot.forEach((exerciseDoc) => {
+          const sets = [];
+
+          exerciseDoc.ref.collection('*').get().then((setSnapshot) => {
+            setSnapshot.forEach((setDoc) => {
+              const setData = setDoc.data();
+              sets.push(setData);
+            });
+          });
+
+          const exerciseData = {
+            exerciseID: exerciseDoc.id,
+            sets,
+          };
+
+          exercises.push(exerciseData);
+        });
+      });
+
+      const splitData = {
+        splitName,
+        exercises,
+      };
+
+      data.push(splitData);
+    });
+
+    return res.status(200).json({ data, success: true });
+  } catch (error) {
+    console.error('Fehler beim Laden der Daten:', error);
+    return res.status(500).json({ message: 'Interner Serverfehler', success: false });
+  }
+}
 
 
 
@@ -344,7 +394,8 @@ export default {
   getTrainingSplitData,
   getTrainingDataForDay,
   getCurrentDate,
-  saveTrainingDataToFirebase
+  saveTrainingDataToFirebase,
+  getTrainingDataFromFirebase 
 };
 
 

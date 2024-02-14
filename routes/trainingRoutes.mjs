@@ -23,6 +23,8 @@ trainingrouter.post('/saveTrainingData', trainingController.saveTrainingData);
 trainingrouter.post('/getTrainingData', trainingController.getTrainingData);
 trainingrouter.post('/getTrainingSplitData', trainingController.getTrainingSplitData);
 trainingrouter.post('/getTrainingDataForDay', trainingController.getTrainingDataForDay);
+trainingrouter.post('/getTrainingDataForDay', trainingController.getTrainingDataForDay);
+trainingrouter.post('/getTrainingDataFromFirebase', trainingController.getTrainingDataFromFirebase);
 
 export default trainingrouter;
 
