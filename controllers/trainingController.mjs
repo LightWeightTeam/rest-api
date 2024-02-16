@@ -117,7 +117,7 @@ const getTrainingData = async (req, res) => {
   }
 };
 
-/*
+
 const getTrainingDataForDay = async (uid, day) => {
   try {
 
@@ -188,7 +188,9 @@ const getTrainingDataForDay = async (uid, day) => {
     return res.status(500).json({ message: 'Interner Serverfehler', success: false });
   }
 };
-*/
+
+
+/*
 const getTrainingDataForDay = async (uid, day) => {
   try {
     console.log(uid);
@@ -256,7 +258,7 @@ const getTrainingDataForDay = async (uid, day) => {
     return { success: false, message: 'Interner Serverfehler' };
   }
 };
-
+*/
 
 
 

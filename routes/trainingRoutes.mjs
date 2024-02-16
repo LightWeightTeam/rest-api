@@ -39,6 +39,7 @@ trainingrouter.get('/getTrainingSplitData', async (req, res) => {
     }
 });
 
+/*
 // GET-Funktion für /getTrainingDataForDay
 trainingrouter.get('/getTrainingDataForDay', async (req, res) => {
     try {
@@ -50,6 +51,7 @@ trainingrouter.get('/getTrainingDataForDay', async (req, res) => {
         res.status(500).json({ error: 'Interner Serverfehler' });
     }
 });
+*/
 
 // GET-Funktion für /getTrainingDataFromFirebase
 trainingrouter.get('/getTrainingDataFromFirebase', async (req, res) => {
@@ -69,7 +71,7 @@ trainingrouter.post('/saveTrainingDataToFirebase', trainingController.saveTraini
 trainingrouter.post('/saveTrainingData', trainingController.saveTrainingData);
 //trainingrouter.post('/getTrainingData', trainingController.getTrainingData);
 //trainingrouter.post('/getTrainingSplitData', trainingController.getTrainingSplitData);
-//trainingrouter.post('/getTrainingDataForDay', trainingController.getTrainingDataForDay);
+trainingrouter.post('/getTrainingDataForDay', trainingController.getTrainingDataForDay);
 //trainingrouter.post('/getTrainingDataForDay', trainingController.getTrainingDataForDay);
 //trainingrouter.post('/getTrainingDataFromFirebase', trainingController.getTrainingDataFromFirebase);
 
