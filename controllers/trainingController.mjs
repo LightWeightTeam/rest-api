@@ -202,6 +202,7 @@ const getTrainingDataForDay = async (uid, day) => {
 
     const trainingData = trainingDoc.data();
     const { selectedGoal, selectedLevel, selectedSplit } = trainingData;
+    console.log(selectedGoal);
 
     const planRef = admin.firestore().collection('plan').doc(selectedGoal);
     const selectedLevelRef = planRef.collection(selectedLevel).doc(selectedSplit);
