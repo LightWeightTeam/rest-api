@@ -117,7 +117,7 @@ const getTrainingData = async (req, res) => {
   }
 };
 
-
+/*
 const getTrainingDataForDay = async (uid, day) => {
   try {
 
@@ -186,6 +186,72 @@ const getTrainingDataForDay = async (uid, day) => {
   } catch (error) {
     console.error('Fehler beim Abrufen der Daten:', error);
     return res.status(500).json({ message: 'Interner Serverfehler', success: false });
+  }
+};
+*/
+const getTrainingDataForDay = async (uid, day) => {
+  try {
+    const userRef = admin.firestore().collection('users').doc(uid);
+    const trainingRef = userRef.collection('training').doc('currentPlan');
+    const trainingDoc = await trainingRef.get();
+
+    if (!trainingDoc.exists) {
+      return { success: false, message: 'Keine Trainingsdaten gefunden' };
+    }
+
+    const trainingData = trainingDoc.data();
+    const { selectedGoal, selectedLevel, selectedSplit } = trainingData;
+
+    const planRef = admin.firestore().collection('plan').doc(selectedGoal);
+    const selectedLevelRef = planRef.collection(selectedLevel).doc(selectedSplit);
+    const selectedSplitDoc = await selectedLevelRef.get();
+
+    if (!selectedSplitDoc.exists) {
+      return { success: false, message: 'Keine entsprechenden Daten gefunden' };
+    }
+
+    const allSplitsData = {};
+    const splitData = {};
+    const splitName = selectedSplitDoc.id;
+
+    const daysRef = selectedSplitDoc.ref.collection('days');
+    const dayDoc = await daysRef.doc(day).get();
+
+    if (!dayDoc.exists) {
+      return { success: false, message: `Keine Daten für Tag ${day} gefunden` };
+    }
+
+    const subCollectionRef = await dayDoc.ref.listCollections();
+
+    for (const subCollection of subCollectionRef) {
+      const subCollectionName = subCollection.id;
+      const exercisesDocs = await subCollection.get();
+
+      const exercisesData = [];
+
+      exercisesDocs.forEach((exerciseDoc) => {
+        const exerciseId = exerciseDoc.id;
+        const exerciseData = exerciseDoc.data();
+
+        exercisesData.push({
+          id: exerciseId,
+          data: exerciseData
+        });
+      });
+
+      splitData[subCollectionName] = exercisesData;
+    }
+
+    allSplitsData[splitName] = splitData;
+
+    return {
+      success: true,
+      message: `Daten für Tag ${day} erfolgreich abgerufen`,
+      data: allSplitsData
+    };
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Daten:', error);
+    return { success: false, message: 'Interner Serverfehler' };
   }
 };
 
