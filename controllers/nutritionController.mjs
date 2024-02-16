@@ -287,7 +287,7 @@ const updateNutriSum = async (uid, selectedDate) => {
     });
 
   } catch (error) {
-    console.error('Error updating nutriSum:', error);
+    console.error('Error updating total nutrition sum:', error);
     throw error;
   }
 };
