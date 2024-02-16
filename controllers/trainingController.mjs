@@ -38,7 +38,7 @@ const saveTrainingData = async (req, res) => {
 
 
 
-const getTrainingData = async (req, res) => {
+const TrainingData = async (req, res) => {
   try {
     const { uid } = req.body;
 
@@ -118,7 +118,7 @@ const getTrainingData = async (req, res) => {
 };
 
 
-const getTrainingDataForDay = async (req, res) => {
+const TrainingDataForDay = async (req, res) => {
   try {
     const { uid, day } = req.body;
     if (!uid || !day) {
@@ -286,7 +286,7 @@ const getCurrentDate = async (uid) => {
 
 
 
-const getTrainingSplitData = async (req, res) => {
+const TrainingSplitData = async (req, res) => {
   try {
     const { selectedGoal, selectedLevel } = req.body;
 
@@ -396,7 +396,7 @@ const saveTrainingDataToFirebase = async (req, res) => {
   }
 }
 
-const getTrainingDataFromFirebase = async (req, res) => {
+const TrainingDataFromFirebase = async (req, res) => {
   try {
     const { uid, selectedDate } = req.body;
 
@@ -459,12 +459,12 @@ const getTrainingDataFromFirebase = async (req, res) => {
 
 export default {
   saveTrainingData,
-  getTrainingData,
-  getTrainingSplitData,
-  getTrainingDataForDay,
+  TrainingData,
+  TrainingSplitData,
+  TrainingDataForDay,
   getCurrentDate,
   saveTrainingDataToFirebase,
-  getTrainingDataFromFirebase 
+  TrainingDataFromFirebase 
 };
 
 
