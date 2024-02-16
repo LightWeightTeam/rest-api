@@ -118,9 +118,9 @@ const getTrainingData = async (req, res) => {
 };
 
 
-const getTrainingDataForDay = async (uid, day) => {
+const getTrainingDataForDay = async (req, res) => {
   try {
-
+    const { uid, day } = req.body;
     if (!uid || !day) {
       return res.status(400).json({ message: 'Fehlende Benutzer-ID oder Tag', success: false });
     }
