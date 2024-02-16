@@ -3,9 +3,7 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import config from '../firebaseKeys/configKey.mjs';
 import axios from 'axios';
-import uidController from './uidController.mjs';
 import crypto from 'crypto';
-import querystring from 'querystring';
 import dotenv from 'dotenv';
 dotenv.config();
 
