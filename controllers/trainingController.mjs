@@ -191,6 +191,7 @@ const getTrainingDataForDay = async (uid, day) => {
 */
 const getTrainingDataForDay = async (uid, day) => {
   try {
+    console.log(uid);
     const userRef = admin.firestore().collection('users').doc(uid);
     const trainingRef = userRef.collection('training').doc('currentPlan');
     const trainingDoc = await trainingRef.get();
