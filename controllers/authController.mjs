@@ -58,12 +58,12 @@ const register = async (req, res) => {
     console.error('Registration error:', error);
 
     // Spezifische Fehler behandeln und entsprechende HTTP-Statuscodes und Fehlermeldungen zurückgeben
-    if (error.code === 'auth/weak-password') {
-      res.status(400).json({ message: 'Weak password', success: false });
-    } else if (error.code === 'auth/email-already-in-use') {
+    if (error.code === 'auth/email-already-in-use') {
       res.status(400).json({ message: 'Email already in use', success: false });
     } else if (error.code === 'auth/invalid-email') {
         res.status(400).json({ message: 'Invalid email format. Please provide a valid email address.', success: false });
+    } else if (error.code === 'auth/weak-password') {
+        res.status(400).json({ message: 'Weak password', success: false });
     } else {
       res.status(401).json({ message: `Registration error: ${error.code} - ${error.message}`, success: false });
     }
