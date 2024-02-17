@@ -37,7 +37,7 @@ const register = async (req, res) => {
         'basic_calories': 0
       });
 
-      const token = generateToken(uid, email);
+      const token = await generateToken(uid, email);
 
       console.log('Documents created');
       res.json({ uid, token, success: true });
@@ -66,7 +66,7 @@ const login = async (req, res) => {
     const user = userCredential.user;
     const uid = user.uid;
 
-    const token = generateToken(uid, email);
+    const token = await generateToken(uid, email);
 
     //Übergabe der UID an das Frontend
     res.json({ uid, token, success: true });
