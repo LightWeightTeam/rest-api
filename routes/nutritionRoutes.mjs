@@ -18,7 +18,7 @@ nutritionrouter.get('/searchFoodItems',tokenController.authenticateToken, async 
 });
 
 //Anzeige der Mealdaten
-nutritionrouter.get('/getMeal', async (req, res) => {
+nutritionrouter.get('/getMeal',tokenController.authenticateToken, async (req, res) => {
     const { uid, selectedDate, mealType } = req.query;
 
     try {
@@ -31,7 +31,7 @@ nutritionrouter.get('/getMeal', async (req, res) => {
 });
 
 //Summe der Mahlzeiten Anzeigen von MealTyp
-nutritionrouter.get('/getMealTypeSum', async (req, res) => {
+nutritionrouter.get('/getMealTypeSum',tokenController.authenticateToken, async (req, res) => {
     const { uid, selectedDate, mealType } = req.query;
 
     try {
@@ -44,7 +44,7 @@ nutritionrouter.get('/getMealTypeSum', async (req, res) => {
 });
 
 //Summe der Mahlzeigen Anzeigen lassen
-nutritionrouter.get('/getMealSum', async (req, res) => {
+nutritionrouter.get('/getMealSum',tokenController.authenticateToken, async (req, res) => {
     const { uid, selectedDate } = req.query;
 
     try {
@@ -57,7 +57,7 @@ nutritionrouter.get('/getMealSum', async (req, res) => {
 });
 
 //Löschen der Daten
-nutritionrouter.get('/deleteMeal', async (req, res) => {
+nutritionrouter.get('/deleteMeal',tokenController.authenticateToken, async (req, res) => {
     const { uid, selectedDate, mealType ,mealId} = req.query;
 
     try {
@@ -70,7 +70,7 @@ nutritionrouter.get('/deleteMeal', async (req, res) => {
 });
 
 // Neue Route für die berechnete Protein-, Fett- und Kohlenhydrataufnahme hinzufügen
-nutritionrouter.get('/calculateNutritionIntake', async (req, res) => {
+nutritionrouter.get('/calculateNutritionIntake',tokenController.authenticateToken, async (req, res) => {
     const { uid, selectedDate } = req.query;
 
     try {
@@ -83,10 +83,10 @@ nutritionrouter.get('/calculateNutritionIntake', async (req, res) => {
 });
 
 //Kalorien Berechnen und speichern
-nutritionrouter.post('/saveBasicCalories', nutritionController.saveBasicCalories);
+nutritionrouter.post('/saveBasicCalories', tokenController.authenticateToken,nutritionController.saveBasicCalories);
 
 //Nahrung Speichern
-nutritionrouter.post('/saveNutritionData', nutritionController.saveNutritionData);
+nutritionrouter.post('/saveNutritionData', tokenController.authenticateToken,nutritionController.saveNutritionData);
 
 
 export default nutritionrouter;

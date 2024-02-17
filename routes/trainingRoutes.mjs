@@ -1,9 +1,9 @@
 import express from 'express';
 const trainingrouter = express.Router();
 import trainingController from '../controllers/trainingController.mjs';
+import tokenController from '../controllers/tokenController.mjs';
 
-
-trainingrouter.get('/getCurrentDate', async (req, res) => {
+trainingrouter.get('/getCurrentDate',tokenController.authenticateToken, async (req, res) => {
     const { uid } = req.query;
 
     try {
@@ -18,12 +18,12 @@ trainingrouter.get('/getCurrentDate', async (req, res) => {
 
 
 
-trainingrouter.post('/saveTrainingDataToFirebase', trainingController.saveTrainingDataToFirebase);
-trainingrouter.post('/saveTrainingData', trainingController.saveTrainingData);
-trainingrouter.post('/TrainingData', trainingController.TrainingData);
-trainingrouter.post('/TrainingSplitData', trainingController.TrainingSplitData);
-trainingrouter.post('/TrainingDataForDay', trainingController.TrainingDataForDay);
-trainingrouter.post('/TrainingDataFromFirebase', trainingController.TrainingDataFromFirebase);
+trainingrouter.post('/saveTrainingDataToFirebase',tokenController.authenticateToken, trainingController.saveTrainingDataToFirebase);
+trainingrouter.post('/saveTrainingData',tokenController.authenticateToken, trainingController.saveTrainingData);
+trainingrouter.post('/TrainingData',tokenController.authenticateToken, trainingController.TrainingData);
+trainingrouter.post('/TrainingSplitData',tokenController.authenticateToken, trainingController.TrainingSplitData);
+trainingrouter.post('/TrainingDataForDay',tokenController.authenticateToken, trainingController.TrainingDataForDay);
+trainingrouter.post('/TrainingDataFromFirebase',tokenController.authenticateToken, trainingController.TrainingDataFromFirebase);
 
 
 
