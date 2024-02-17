@@ -13,6 +13,8 @@ const authenticateToken = async (req, res, next) => {
     const decodedToken = await admin.auth().verifyIdToken(token);
     const { uid, email } = decodedToken;
     console.log('Decoded Token:', decodedToken);
+console.log('req.query.uid:', req.query.uid);
+console.log('req.query.email:', req.query.email);
 
     // Überprüfen, ob UID und E-Mail aus dem Token mit der Anfrage übereinstimmen
     if (uid !== req.query.uid || email !== req.query.email) {
