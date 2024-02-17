@@ -4,6 +4,7 @@ import 'firebase/compat/firestore';
 import config from '../firebaseKeys/configKey.mjs';
 import admin from 'firebase-admin';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 dotenv.config();
 
 const app = firebase.initializeApp(config);
