@@ -16,8 +16,8 @@ server.timeout = 60000;
 import authrouter from './routes/authRoutes.mjs';
 app.use('/auth', authrouter);
 
-import uidrouter from './routes/uidRoutes.mjs';
-app.use('/uid', uidrouter);
+//import uidrouter from './routes/uidRoutes.mjs';
+//app.use('/uid', uidrouter);
 
 import nutritionrouter from './routes/nutritionRoutes.mjs';
 app.use('/nutrition', nutritionrouter);
