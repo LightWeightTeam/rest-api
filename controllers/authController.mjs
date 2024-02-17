@@ -3,13 +3,14 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import config from '../firebaseKeys/configKey.mjs';
 import admin from 'firebase-admin';
+import jwt from 'jsonwebtoken';
 
 const app = firebase.initializeApp(config);
 const adminApp = admin.app();
 
 //generiert einen Token
-const generateToken = (uid, email) => {
-  return admin.auth().createCustomToken(uid, { email });
+const generateToken = (uid) => {
+  return jwt.sign({ uid }, '123', { expiresIn: '24h' });
 };
 
 
