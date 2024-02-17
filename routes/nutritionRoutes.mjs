@@ -5,7 +5,7 @@ import { authenticateToken } from '../controllers/tokenController.mjs';
 
 
 // Route Suche der Lebensmittel
-nutritionrouter.get('/searchFoodItems', await authenticateToken, async (req, res) => {
+nutritionrouter.get('/searchFoodItems', async (req, res) => {
     const { query, pageNumber } = req.query; // Pagenumber muss übergenben werden damit man mehrere Daten Laden kann
 
     try {
