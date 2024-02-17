@@ -1,9 +1,11 @@
 import express from 'express';
 const nutritionrouter = express.Router();
 import nutritionController from '../controllers/nutritionController.mjs';
+import { authenticateToken } from '../controllers/tokenController.mjs';
+
 
 // Route Suche der Lebensmittel
-nutritionrouter.get('/searchFoodItems', async (req, res) => {
+nutritionrouter.get('/searchFoodItems', authenticateToken, async (req, res) => {
     const { query, pageNumber } = req.query; // Pagenumber muss übergenben werden damit man mehrere Daten Laden kann
 
     try {

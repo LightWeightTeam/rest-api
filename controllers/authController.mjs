@@ -2,9 +2,15 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import config from '../firebaseKeys/configKey.mjs';
-
+import admin from 'firebase-admin';
 
 const app = firebase.initializeApp(config);
+const adminApp = admin.app();
+
+//generiert einen Token
+const generateToken = (uid, email) => {
+  return admin.auth().createCustomToken(uid, { email });
+};
 
 
 //Registrieren von Usern
@@ -31,8 +37,10 @@ const register = async (req, res) => {
         'basic_calories': 0
       });
 
+      const token = generateToken(uid, email);
+
       console.log('Documents created');
-      res.json({ uid, success: true });
+      res.json({ uid, token, success: true });
     } catch (e) {
       console.error(e);
       res.status(500).json({ message: 'Error creating documents', success: false });
@@ -58,8 +66,10 @@ const login = async (req, res) => {
     const user = userCredential.user;
     const uid = user.uid;
 
+    const token = generateToken(uid, email);
+
     //Übergabe der UID an das Frontend
-    res.json({ uid, success: true });
+    res.json({ uid, token, success: true });
   } catch (error) {
     const errorCode = error.code;
     const errorMessage = error.message;
