@@ -29,13 +29,10 @@ const saveTrainingData = async (req, res) => {
 
     return res.status(200).json({ message: 'Daten erfolgreich gespeichert', success: true });
   } catch (error) {
-    console.error('Fehler beim Speichern der Daten:', error);
+    console.error('Fehler beim Speichern der Daten:', error.message);
     return res.status(500).json({ message: 'Interner Serverfehler', success: false });
   }
 };
-
-
-
 
 
 const TrainingData = async (req, res) => {
@@ -270,16 +267,15 @@ const getCurrentDate = async (uid) => {
     const currentDateData = await currentPlanRef.get();
 
     if (currentDateData.exists) {
-      const {currentDate = 0} = currentDateData.data() || {};
+      const { currentDate = 0 } = currentDateData.data() || {};
 
       return { currentDate };
     } else {
-      console.error(`currentDate nicht gefunden`);
+      console.error('currentDate nicht gefunden');
       return null;
     }
-  }
-  catch (error){
-    console.error('Fehler beim Lesen currentDate:', error);
+  } catch (error) {
+    console.error('Fehler beim Lesen currentDate:', error.message);
     throw error;
   }
 };

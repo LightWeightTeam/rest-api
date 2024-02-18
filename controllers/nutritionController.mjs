@@ -28,13 +28,14 @@ const parseXmlToJson = (xmlData) => {
 const app = firebase.initializeApp(config);
 
 
-
-
 //Grundvariablen zu Firestore hinzufügen 
 const saveBasicCalories = async (req, res) => {
   try {
-
     const { uid, gender, age, weight, height } = req.body;
+
+    if (!uid || !gender || !age || !weight || !height) {
+      return res.status(400).json({ message: 'Missing required data', success: false });
+    }
 
     let basicCalories = 0;
 
@@ -44,79 +45,87 @@ const saveBasicCalories = async (req, res) => {
       basicCalories = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
     }
 
-    if (!uid) {
-      return res.status(400).json({ message: 'Missing data: uid missing', success: false });
-    }
+    // Update der basic_calories und Nutzerdaten in Firebase
+    const userRef = firebase.firestore().collection('users').doc(uid);
+    const foodValuesRef = userRef.collection('nutrition').doc('food_values');
 
+    await foodValuesRef.update({
+      'basic_calories': basicCalories
+    });
 
-    //Update der basic_calories in Firebase
-    await firebase.firestore().collection('users').doc(uid)
-      .collection('nutrition').doc('food_values')
-      .update({
-        'basic_calories': basicCalories
-      });
-
-      await firebase.firestore().collection('users').doc(uid)
-      .update({
-        'gender': gender,
-        'age': age,
-        'weight': weight,
-        'height': height
-      });
+    await userRef.update({
+      'gender': gender,
+      'age': age,
+      'weight': weight,
+      'height': height
+    });
 
     return res.status(200).json({ message: 'Base calories successfully saved in Firestore', success: true });
   } catch (error) {
     console.error('Error saving base calories in Firestore:', error);
+
+
     return res.status(500).json({ message: 'Error saving base calories in Firestore', success: false });
   }
 };
 
 
 
-
 //Suchfunktion zur erhalten der Nahrungsdaten
 async function searchFoodItems(foodName, pageNumber) {
-  const apiKeyFatSecret = process.env.apiKeyFatSecret; // Ihr FatSecret Consumer Key
-  const apiSecret = process.env.apiSecret; // Ihr FatSecret Consumer Secret
-
-  //Vorgeschriebenen übergabe Parameter von FatSecret
-  const oauthParams = {
-    oauth_consumer_key: apiKeyFatSecret,
-    oauth_signature_method: 'HMAC-SHA1',
-    oauth_version: '1.0',
-    oauth_nonce: Math.random().toString(36).substring(2),
-    oauth_timestamp: Math.floor(Date.now() / 1000),
-    method: 'foods.search',
-    search_expression: foodName,
-    page_number: pageNumber
-  };
-
-  const sortedParams = Object.keys(oauthParams)
-    .sort()
-    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(oauthParams[key])}`)
-    .join('&');
-
-  const baseString = `POST&${encodeURIComponent(process.env.fatsecret_uri)}&${encodeURIComponent(sortedParams)}`;
-  const signingKey = `${encodeURIComponent(apiSecret)}&`;
-  const signature = crypto.createHmac('sha1', signingKey).update(baseString).digest('base64');
-
-  oauthParams.oauth_signature = signature;
-
   try {
+    const apiKeyFatSecret = process.env.apiKeyFatSecret;
+    const apiSecret = process.env.apiSecret;
+
+    if (!apiKeyFatSecret || !apiSecret) {
+      throw new Error('API key or secret missing');
+    }
+
+    const oauthParams = {
+      oauth_consumer_key: apiKeyFatSecret,
+      oauth_signature_method: 'HMAC-SHA1',
+      oauth_version: '1.0',
+      oauth_nonce: Math.random().toString(36).substring(2),
+      oauth_timestamp: Math.floor(Date.now() / 1000),
+      method: 'foods.search',
+      search_expression: foodName,
+      page_number: pageNumber
+    };
+
+    const sortedParams = Object.keys(oauthParams)
+      .sort()
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(oauthParams[key])}`)
+      .join('&');
+
+    const baseString = `POST&${encodeURIComponent(process.env.fatsecret_uri)}&${encodeURIComponent(sortedParams)}`;
+    const signingKey = `${encodeURIComponent(apiSecret)}&`;
+    const signature = crypto.createHmac('sha1', signingKey).update(baseString).digest('base64');
+
+    oauthParams.oauth_signature = signature;
+
     const response = await axios.post(process.env.fatsecret_uri, null, {
       params: oauthParams
     });
 
-    //Die Empfangenen Daten von XML zu Json ändern
-    const xmlResponse = response.data; // Diese übergabe ist immer xml
-    const jsonResult = await parseXmlToJson(xmlResponse); // Die Funktion parseXmlToJson ändert die Daten in json um
+    const xmlResponse = response.data;
+    const jsonResult = await parseXmlToJson(xmlResponse);
 
     return jsonResult;
   } catch (error) {
-    console.error('API request error:', error);
-    throw error;
+    console.error('Error in API request:', error.message);
+
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error details:', {
+        responseStatus: error.response?.status,
+        responseData: error.response?.data
+      });
+      throw new Error('API request failed');
+    } else {
+      throw error;
+    }
   }
 }
+
 
 
 // Speichern der Nährwertdaten
@@ -125,6 +134,10 @@ const saveNutritionData = async (req, res) => {
 
     //Diese Daten werden von Flutter übergeben
     const { uid, calories, fat, carbs, protein, foodName, amount, selectedDate, mealType } = req.body;
+
+    if (!uid || !calories || !fat || !carbs || !protein || !foodName || !amount || !selectedDate || !mealType) {
+      return res.status(400).json({ message: 'Missing required data', success: false });
+    }
 
     //Falls die daten null sind werden sie auf 0 gesetzt
     const caloriesValue = calories || 0;
@@ -195,6 +208,11 @@ const updateSumMealType = async (uid, selectedDate, mealType) => {
     const mealsRef = selectedDateRef.collection('meals');
 
     const mealDocs = await mealsRef.get();
+
+    if (mealDocs.empty) {
+      throw new Error('No meals found for the specified date and meal type.');
+    }
+
     let totalCalories = 0;
     let totalCarbs = 0;
     let totalFat = 0;
@@ -239,6 +257,10 @@ const updateNutriSum = async (uid, selectedDate) => {
     const selectedDateRef = nutritionRef.collection(selectedDate);
 
     const mealTypesSnapshot = await selectedDateRef.get();
+
+    if (mealTypesSnapshot.empty) {
+      throw new Error(`No meal types found for the specified date: ${selectedDate}`);
+    }
 
     let totalCalories = 0;
     let totalCarbs = 0;
@@ -293,7 +315,7 @@ const updateNutriSum = async (uid, selectedDate) => {
 };
 
 
-//Anzeige der Meals
+// Anzeige der Meals
 const getMeal = async (uid, selectedDate, mealType) => {
   try {
     const nutritionRef = firebase.firestore().collection('users').doc(uid).collection('nutrition').doc('food_values');
@@ -302,11 +324,9 @@ const getMeal = async (uid, selectedDate, mealType) => {
 
     const mealDocs = await mealsRef.get();
 
-    let mealDataArray = [];
-
-    mealDocs.forEach((mealDoc) => {
+    const mealDataArray = mealDocs.docs.map((mealDoc) => {
       const mealData = mealDoc.data();
-      mealDataArray.push({
+      return {
         amount: mealData.amount || '',
         calories: mealData.calories || 0,
         carbs: mealData.carbs || 0,
@@ -314,12 +334,12 @@ const getMeal = async (uid, selectedDate, mealType) => {
         foodName: mealData.foodName || '',
         mealId: mealData.mealId || '',
         protein: mealData.protein || 0
-      });
+      };
     });
 
     return mealDataArray;
   } catch (error) {
-    console.error('Error reading meal data:', error);
+    console.error(`Error reading meal data`, error.message);
     throw error;
   }
 };
@@ -337,11 +357,11 @@ const getMealTypeSum = async (uid, selectedDate, mealType) => {
 
       return { caloriesSum, carbsSum, fatSum, proteinSum };
     } else {
-      console.error(`Meal '${mealType}' date '${selectedDate}' not found.`);
+      console.error(`Meal '${mealType}' for date '${selectedDate}' not found.`);
       return null;
     }
   } catch (error) {
-    console.error('Error reading meal data:', error);
+    console.error(`Error reading meal data for uid: ${uid}, selectedDate: ${selectedDate}, mealType: ${mealType}. Error:`, error.message);
     throw error;
   }
 };
@@ -363,7 +383,7 @@ const getMealSum = async (uid, selectedDate) => {
       return null;
     }
   } catch (error) {
-    console.error('Error reading total sum:', error);
+    console.error(`Error reading total sum for uid: ${uid}, selectedDate: ${selectedDate}. Error:`, error.message);
     throw error;
   }
 };
@@ -383,17 +403,23 @@ const deleteMeal = async (uid, selectedDate, mealType, mealId) => {
 
     const mealDoc = await mealRef.get();
 
+    if (!mealDoc.exists) {
+      console.error(`Meal with ID '${mealId}' not found for date '${selectedDate}' and type '${mealType}'`);
+      return null;
+    }
 
     await mealRef.delete();
 
     // Aktualisieren der Summen nach dem Löschen der Mahlzeit
     await updateSumMealType(uid, selectedDate, mealType);
     await updateNutriSum(uid, selectedDate);
-    //ist Optional gehört noch geprüft ob es Sinn mach oder nicht
+    // Ist optional und sollte überprüft werden, ob es Sinn macht oder nicht
     await getMeal(uid, selectedDate, mealType);
 
+    return { message: `Meal with ID '${mealId}' successfully deleted` };
   } catch (error) {
-    console.error('Fehler beim Löschen der Mahlzeit:', error);
+    console.error(`Error deleting meal with ID '${mealId}' for uid: ${uid}, selectedDate: ${selectedDate}, mealType: ${mealType}. Error:`, error.message);
+    throw error;
   }
 };
 
@@ -402,18 +428,14 @@ const calculateNutritionIntake = async (uid, selectedDate) => {
     console.log('Received UID:', uid);
     console.log('Received selectedDate:', selectedDate);
 
-    
     const nutritionRef = firebase.firestore().collection('users').doc(uid).collection('nutrition').doc('food_values');
     const selectedDateRef = nutritionRef.collection(selectedDate);
-
 
     const basicCaloriesData = await nutritionRef.get();
     const basicCalories = basicCaloriesData.data()?.basic_calories || 0;
 
-
     const burnedCaloriesData = await selectedDateRef.doc('nutriSum').get();
     const burnedCalories = burnedCaloriesData.data()?.burnedCalories || 0;
-
 
     const totalCalories = basicCalories + burnedCalories;
 
@@ -427,11 +449,9 @@ const calculateNutritionIntake = async (uid, selectedDate) => {
       carb: 4,
     };
 
-
     const proteinIntakeGrams = proteinIntake / caloriesPerGram.protein;
     const fatIntakeGrams = fatIntake / caloriesPerGram.fat;
     const carbIntakeGrams = carbIntake / caloriesPerGram.carb;
-
 
     console.log('Protein Intake:', proteinIntakeGrams);
     console.log('Fat Intake:', fatIntakeGrams);
@@ -439,7 +459,7 @@ const calculateNutritionIntake = async (uid, selectedDate) => {
 
     return { proteinIntakeGrams, fatIntakeGrams, carbIntakeGrams };
   } catch (error) {
-    console.error('Error calculating nutrition intake:', error);
+    console.error(`Error calculating nutrition intake for uid: ${uid}, selectedDate: ${selectedDate}. Error:`, error.message);
     throw error;
   }
 };
