@@ -28,7 +28,7 @@ const parseXmlToJson = (xmlData) => {
 const app = firebase.initializeApp(config);
 
 
-//Grundvariablen zu Firestore hinzufügen 
+// Grundvariablen zu Firestore hinzufügen 
 const saveBasicCalories = async (req, res) => {
   try {
     const { uid, gender, age, weight, height } = req.body;
@@ -60,14 +60,13 @@ const saveBasicCalories = async (req, res) => {
       'height': height
     });
 
-    return res.status(200).json({ message: 'Base calories successfully saved in Firestore', success: true });
+    return res.status(200).json({ message: 'Base calories successfully saved in Firestore', success: true, basic_calories: basicCalories });
   } catch (error) {
     console.error('Error saving base calories in Firestore:', error);
-
-
     return res.status(500).json({ message: 'Error saving base calories in Firestore', success: false });
   }
 };
+
 
 
 
