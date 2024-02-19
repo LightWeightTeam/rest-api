@@ -60,7 +60,7 @@ const saveBasicCalories = async (req, res) => {
       'height': height
     });
 
-    return res.status(200).json({ message: 'Base calories successfully saved in Firestore', success: true, basic_calories: basicCalories });
+    return res.status(200).json({ message: 'Base calories successfully saved in Firestore', success: true, basicCalories: basicCalories });
   } catch (error) {
     console.error('Error saving base calories in Firestore:', error);
     return res.status(500).json({ message: 'Error saving base calories in Firestore', success: false });
