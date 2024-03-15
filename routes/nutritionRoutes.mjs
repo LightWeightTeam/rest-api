@@ -122,6 +122,33 @@ nutritionrouter.get('/calculateNutritionIntake', tokenController.authenticateTok
   }
 });
 
+
+// Route zum Abrufen der Grundkalorien eines Benutzers
+nutritionrouter.get('/getBasicCalories', tokenController.authenticateToken, async (req, res) => {
+  const { uid } = req.query;
+
+  try {
+    if (!uid) {
+      res.status(400).json({ error: 'Invalid request parameters' });
+      return;
+    }
+
+    const basicCaloriesData = await nutritionController.getBasicCalories(uid);
+
+    if (basicCaloriesData) {
+      res.status(200).json(basicCaloriesData);
+    } else {
+      res.status(404).json({ error: `Basic calories not found for user with UID '${uid}'` });
+    }
+  } catch (error) {
+    console.error(`Error getting basic calories for user with UID '${uid}':`, error.message);
+    res.status(500).json({ error: 'Error getting basic calories' });
+  }
+});
+
+
+
+
 //Kalorien Berechnen und speichern
 nutritionrouter.post('/saveBasicCalories', tokenController.authenticateToken,nutritionController.saveBasicCalories);
 

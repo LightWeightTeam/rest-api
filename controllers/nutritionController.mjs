@@ -463,6 +463,8 @@ const calculateNutritionIntake = async (uid, selectedDate) => {
   }
 };
 
+
+
 export default {
   saveBasicCalories,
   searchFoodItems,
