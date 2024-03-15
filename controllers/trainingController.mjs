@@ -450,26 +450,8 @@ const TrainingDataFromFirebase = async (req, res) => {
   }
 }
 
-// Funktion zum Abrufen der Grundkalorien eines Benutzers
-const getBasicCalories = async (uid) => {
-  try {
-    const userRef = firebase.firestore().collection('users').doc(uid);
-    const nutritionRef = userRef.collection('nutrition').doc('food_values');
 
-    const nutritionSnapshot = await nutritionRef.get();
 
-    if (nutritionSnapshot.exists) {
-      const basicCalories = nutritionSnapshot.data()?.basic_calories || 0;
-      return { basicCalories };
-    } else {
-      console.error(`Nutrition data not found for user with UID '${uid}'`);
-      return null;
-    }
-  } catch (error) {
-    console.error(`Error fetching basic calories for user with UID '${uid}':`, error.message);
-    throw error;
-  }
-};
 
 
 
@@ -481,7 +463,6 @@ export default {
   getCurrentDate,
   saveTrainingDataToFirebase,
   TrainingDataFromFirebase,
-  getBasicCalories
 };
 
 
