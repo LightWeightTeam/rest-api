@@ -28,7 +28,7 @@ const parseXmlToJson = (xmlData) => {
 const app = firebase.initializeApp(config);
 
 
-// Grundvariablen zu Firestore hinzufügen 
+// Grundvariablen zu Firestore hinzufügen
 const saveBasicCalories = async (req, res) => {
   try {
     const { uid, gender, age, weight, height } = req.body;
@@ -127,10 +127,9 @@ async function searchFoodItems(foodName, pageNumber) {
 
 
 
-// Speichern der Nährwertdaten
+//Speichern der Nährwertdaten
 const saveNutritionData = async (req, res) => {
   try {
-
     //Diese Daten werden von Flutter übergeben
     const { uid, calories, fat, carbs, protein, foodName, amount, selectedDate, mealType } = req.body;
 
@@ -138,7 +137,7 @@ const saveNutritionData = async (req, res) => {
       return res.status(400).json({ message: 'Missing required data', success: false });
     }
 
-    //Falls die daten null sind werden sie auf 0 gesetzt
+    //Falls die Daten null sind, werden sie auf 0 gesetzt
     const caloriesValue = calories || 0;
     const fatValue = fat || 0.0;
     const carbsValue = carbs || 0.0;
@@ -164,7 +163,7 @@ const saveNutritionData = async (req, res) => {
       await mealTypeRef.set({});
     }
 
-    //Hier wird in der collection meals ein Dokument erstellt welches von 1 hinaufzählt
+    //Hier wird in der collection meals ein Dokument erstellt, welches von 1 hinaufzählt
     const mealsRef = mealTypeRef.collection('meals');
     let mealIndex = 1;
     let mealDocRef;
@@ -187,14 +186,13 @@ const saveNutritionData = async (req, res) => {
         });
         //Aufruf um die Summe von dem MealTyp zu aktualisieren
         await updateSumMealType(uid, selectedDate, mealType)
-        //Aufruf damit die komplette summe aktualisiert wird
-        await updateNutriSum(uid,selectedDate)
+        //Aufruf damit die komplette Summe aktualisiert wird
+        await updateNutriSum(uid, selectedDate)
         return res.status(200).json({ message: 'Nutritional data successfully saved in Firestore', success: true });
-        
       }
     } while (true);
   } catch (error) {
-    console.error('Error saving nutritional data in Firestore::', error);
+    console.error('Error saving nutritional data in Firestore:', error);
     return res.status(500).json({ message: 'Error saving nutritional data in Firestore', success: false });
   }
 };
