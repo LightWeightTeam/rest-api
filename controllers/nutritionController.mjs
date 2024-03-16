@@ -199,6 +199,8 @@ const saveNutritionData = async (req, res) => {
   }
 };
 
+
+/*
 //Aktualisieren Summe MealTyp
 const updateSumMealType = async (uid, selectedDate, mealType) => {
   try {
@@ -310,6 +312,105 @@ const updateNutriSum = async (uid, selectedDate) => {
   } catch (error) {
     console.error('Error updating total nutrition sum:', error);
     throw error;
+  }
+};
+*/
+// Aktualisieren Summe MealTyp
+const updateSumMealType = async (uid, selectedDate, mealType) => {
+  try {
+    const nutritionRef = firebase.firestore().collection('users').doc(uid).collection('nutrition').doc('food_values');
+    const selectedDateRef = nutritionRef.collection(selectedDate).doc(mealType);
+    const mealsRef = selectedDateRef.collection('meals');
+
+    const mealDocs = await mealsRef.get();
+
+    let totalCalories = 0;
+    let totalCarbs = 0;
+    let totalFat = 0;
+    let totalProtein = 0;
+
+    mealDocs.forEach((mealDoc) => {
+      const mealData = mealDoc.data();
+      totalCalories += mealData.calories || 0;
+      totalCarbs += mealData.carbs || 0;
+      totalFat += mealData.fat || 0;
+      totalProtein += mealData.protein || 0;
+    });
+
+    await selectedDateRef.set(
+      {
+        caloriesSum: totalCalories,
+        carbsSum: totalCarbs,
+        fatSum: totalFat,
+        proteinSum: totalProtein
+      },
+      { merge: true }
+    );
+
+    console.log('Nutritional values successfully updated:', {
+      caloriesSum: totalCalories,
+      carbsSum: totalCarbs,
+      fatSum: totalFat,
+      proteinSum: totalProtein
+    });
+  } catch (error) {
+    console.error('Error updating nutritional values:', error);
+  }
+};
+
+// Aktualisieren der Gesamten Summe
+const updateNutriSum = async (uid, selectedDate) => {
+  try {
+    const nutritionRef = firebase.firestore().collection('users').doc(uid).collection('nutrition').doc('food_values');
+    const selectedDateRef = nutritionRef.collection(selectedDate);
+
+    const mealTypesSnapshot = await selectedDateRef.get();
+
+    let totalCalories = 0;
+    let totalCarbs = 0;
+    let totalFat = 0;
+    let totalProtein = 0;
+
+    mealTypesSnapshot.forEach((doc) => {
+      const mealTypeData = doc.data();
+      totalCalories += mealTypeData.caloriesSum || 0;
+      totalCarbs += mealTypeData.carbsSum || 0;
+      totalFat += mealTypeData.fatSum || 0;
+      totalProtein += mealTypeData.proteinSum || 0;
+    });
+
+    const nutriSumRef = selectedDateRef.doc('nutriSum');
+
+    if (!mealTypesSnapshot.empty) {
+      await nutriSumRef.set(
+        {
+          totalCalories,
+          totalCarbs,
+          totalFat,
+          totalProtein
+        },
+        { merge: true }
+      );
+
+      console.log('nutriSum successfully updated:', {
+        totalCalories,
+        totalCarbs,
+        totalFat,
+        totalProtein
+      });
+    } else {
+      // Wenn keine Mahlzeiten gefunden werden, setzen Sie die Summen auf Null
+      await nutriSumRef.set({
+        totalCalories: 0,
+        totalCarbs: 0,
+        totalFat: 0,
+        totalProtein: 0
+      });
+      
+      console.log('nutriSum set to zero as no meals were found');
+    }
+  } catch (error) {
+    console.error('Error updating total nutrition sum:', error);
   }
 };
 
