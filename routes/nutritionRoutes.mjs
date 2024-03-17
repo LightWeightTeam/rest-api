@@ -146,7 +146,23 @@ nutritionrouter.get('/getBasicCalories', tokenController.authenticateToken, asyn
   }
 });
 
+// Route zur Abrufung der Anzahl der Mahlzeiten
+nutritionrouter.get('/getMealNumber', tokenController.authenticateToken, async (req, res) => {
+  const { uid, selectedDate } = req.query;
 
+  try {
+    if (!uid || !selectedDate) {
+      res.status(400).json({ error: 'Invalid request parameters' });
+      return;
+    }
+
+    const mealNumber = await nutritionController.getMealNumber(uid, selectedDate);
+    res.status(200).json({ mealNumber });
+  } catch (error) {
+    console.error(`Error retrieving meal count for uid: ${uid}, selectedDate: ${selectedDate}. Error:`, error.message);
+    res.status(500).json({ error: 'Error retrieving meal count' });
+  }
+});
 
 
 //Kalorien Berechnen und speichern

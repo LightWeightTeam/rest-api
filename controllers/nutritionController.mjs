@@ -583,6 +583,28 @@ const getBasicCalories = async (uid) => {
   }
 };
 
+// Funktion zum Abrufen der Anzahl der Mahlzeiten
+const getMealNumber = async (uid, selectedDate) => {
+  try {
+    const nutritionRef = firebase.firestore().collection('users').doc(uid).collection('nutrition').doc('food_values').collection(selectedDate);
+
+    // Abrufen der Mahlzeiten an dem ausgewählten Datum
+    const mealTypesSnapshot = await nutritionRef.get();
+
+    let mealCount = 0;
+
+    // Überprüfen, ob Mahlzeiten vorhanden sind und zählen
+    mealTypesSnapshot.forEach((doc) => {
+      const mealTypeData = doc.data();
+      mealCount += Object.keys(mealTypeData).length - 1; // 'nutriSum' Dokument wird ausgeschlossen
+    });
+
+    return mealCount;
+  } catch (error) {
+    console.error(`Error retrieving meal count for uid: ${uid}, selectedDate: ${selectedDate}. Error:`, error.message);
+    throw error;
+  }
+};
 
 export default {
   saveBasicCalories,
@@ -594,4 +616,5 @@ export default {
   deleteMeal,
   calculateNutritionIntake,
   getBasicCalories,
+  getMealNumber
 }
