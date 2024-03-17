@@ -595,8 +595,9 @@ const getMealNumber = async (uid, selectedDate) => {
 
     // Überprüfen, ob Mahlzeiten vorhanden sind und zählen
     mealTypesSnapshot.forEach((doc) => {
-      const mealTypeData = doc.data();
-      mealCount += Object.keys(mealTypeData).length - 1; // 'nutriSum' Dokument wird ausgeschlossen
+      if (doc.id !== 'nutriSum') { // Ausschließen des Dokuments 'nutriSum'
+        mealCount++;
+      }
     });
 
     return mealCount;
@@ -605,6 +606,7 @@ const getMealNumber = async (uid, selectedDate) => {
     throw error;
   }
 };
+
 
 export default {
   saveBasicCalories,
