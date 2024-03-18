@@ -21,7 +21,7 @@ trainingrouter.get('/getCurrentDate', tokenController.authenticateToken, async (
 trainingrouter.post('/saveTrainingDataToFirebase',tokenController.authenticateToken, trainingController.saveTrainingDataToFirebase);
 trainingrouter.post('/saveTrainingData',tokenController.authenticateToken, trainingController.saveTrainingData);
 trainingrouter.post('/TrainingData',tokenController.authenticateToken, trainingController.TrainingData);
-trainingrouter.post('/TrainingSplitData', trainingController.TrainingSplitData);
+trainingrouter.post('/TrainingSplitData', tokenController.authenticateToken, trainingController.TrainingSplitData);
 trainingrouter.post('/TrainingDataForDay',tokenController.authenticateToken, trainingController.TrainingDataForDay);
 trainingrouter.post('/TrainingDataFromFirebase',tokenController.authenticateToken, trainingController.TrainingDataFromFirebase);
 
