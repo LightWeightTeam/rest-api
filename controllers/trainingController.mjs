@@ -281,7 +281,7 @@ const getCurrentDate = async (uid) => {
 };
 
 
-
+/*
 const TrainingSplitData = async (req, res) => {
   try {
     const { selectedGoal, selectedLevel } = req.body;
@@ -346,6 +346,63 @@ const TrainingSplitData = async (req, res) => {
     return res.status(500).json({ message: 'Interner Serverfehler', success: false });
   }
 };
+*/
+const TrainingSplitData = async (req, res) => {
+  try {
+    const { selectedGoal, selectedLevel, selectedSplit } = req.body;
+
+    if (!selectedGoal || !selectedLevel || !selectedSplit) {
+      return res.status(400).json({ message: 'Fehlende Daten', success: false });
+    }
+
+    const planRef = admin.firestore().collection('plan').doc(selectedGoal);
+    const selectedLevelRef = planRef.collection(selectedLevel);
+    const splitRef = selectedLevelRef.doc(selectedSplit);
+    const daysRef = splitRef.collection('days');
+    const allDaysDocs = await daysRef.listDocuments();
+
+    const splitData = {};
+
+    for (const dayDoc of allDaysDocs) {
+      const dayName = dayDoc.id;
+      const dayRef = daysRef.doc(dayName);
+      const subCollectionRef = await dayRef.listCollections();
+
+      const dayData = {};
+
+      for (const subCollection of subCollectionRef) {
+        const subCollectionName = subCollection.id;
+        const exercisesDocs = await subCollection.get();
+
+        const exercisesData = [];
+
+        exercisesDocs.forEach((exerciseDoc) => {
+          const exerciseId = exerciseDoc.id;
+          const exerciseData = exerciseDoc.data(); // Anpassen entsprechend der Struktur Ihrer Daten
+
+          exercisesData.push({
+            id: exerciseId,
+            data: exerciseData
+          });
+        });
+
+        dayData[subCollectionName] = exercisesData;
+      }
+
+      splitData[dayName] = dayData;
+    }
+
+    return res.status(200).json({
+      message: 'Daten erfolgreich abgerufen',
+      success: true,
+      data: splitData
+    });
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Daten:', error);
+    return res.status(500).json({ message: 'Interner Serverfehler', success: false });
+  }
+};
+
 
 //Hier soll vielleicht noch überprüft werden ob savedTraining als Doc bereits exisitiert.
 const saveTrainingDataToFirebase = async (req, res) => {
