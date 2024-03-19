@@ -508,6 +508,45 @@ const TrainingDataFromFirebase = async (req, res) => {
 }
 
 
+const SplitNameForDay = async (req, res) => {
+  try {
+    const { selectedGoal, selectedLevel, selectedSplit } = req.body;
+
+    if (!selectedGoal || !selectedLevel || !selectedSplit) {
+      return res.status(400).json({ message: 'Fehlende Daten', success: false });
+    }
+
+
+    const planRef = admin.firestore().collection('plan').doc(selectedGoal);
+    const selectedLevelRef = planRef.collection(selectedLevel).doc(selectedSplit);
+    const daysRef = selectedLevelRef.collection('days');
+    
+    const dayNames = ["day1", "day2", "day3", "day4", "day5", "day6", "day7"];
+    const result = {};
+
+    for (const dayName of dayNames) {
+      const dayDoc = await daysRef.doc(dayName).get();
+
+      if (dayDoc.exists) {
+        const subCollections = await dayDoc.ref.listCollections();
+
+        if (subCollections.length > 0) {
+          const subCollectionName = subCollections[0].id;
+          result[dayName] = subCollectionName;
+        } else {
+          result[dayName] = null;
+        }
+      } else {
+        result[dayName] = null;
+      }
+    }
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Daten:', error);
+    return res.status(500).json({ message: 'Interner Serverfehler', success: false });
+  }
+};
 
 
 
@@ -520,6 +559,7 @@ export default {
   getCurrentDate,
   saveTrainingDataToFirebase,
   TrainingDataFromFirebase,
+  SplitNameForDay,
 };
 
 
