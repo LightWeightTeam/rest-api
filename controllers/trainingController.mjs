@@ -116,66 +116,41 @@ const TrainingData = async (req, res) => {
 
 const TrainingDataForDaySplitSelect = async (req, res) => {
   try {
-    const { selectedGoal, selectedLevel, selectedSplit, day } = req.body;
+    const { selectedGoal, selectedLevel, selectedSplit, day, planName } = req.body;
 
-
-    if (!selectedGoal || !selectedLevel || !selectedSplit || !day) {
-      return { message: 'Fehlende Parameter', success: false };
+    if (!selectedGoal || !selectedLevel || !selectedSplit || !day || !planName) {
+      return res.status(400).json({ message: 'Fehlende Parameter', success: false });
     }
-
 
     const planRef = admin.firestore().collection('plan').doc(selectedGoal);
-    const selectedLevelRef = planRef.collection(selectedLevel).doc(selectedSplit);
-    const selectedSplitDoc = await selectedLevelRef.get();
+    const selectedLevelRef = planRef.collection(selectedLevel).doc(selectedSplit).collection('days').doc(day).collection(planName);
 
-    if (!selectedSplitDoc.exists) {
-      return { message: 'Keine entsprechenden Daten gefunden', success: false };
+    const exercisesSnapshot = await selectedLevelRef.get();
+
+    if (exercisesSnapshot.empty) {
+      return res.status(404).json({ message: `Keine Daten für den Plan "${planName}" gefunden`, success: false });
     }
 
-    const allSplitsData = {};
-    const splitData = {};
-    const splitName = selectedSplitDoc.id;
+    const exercisesData = [];
 
-    const daysRef = selectedSplitDoc.ref.collection('days');
-    const dayDoc = await daysRef.doc(day).get();
-
-    if (!dayDoc.exists) {
-      return { message: `Keine Daten für Tag ${day} gefunden`, success: false };
-    }
-
-    const subCollectionRef = await dayDoc.ref.listCollections();
-
-    for (const subCollection of subCollectionRef) {
-      const subCollectionName = subCollection.id;
-      const exercisesDocs = await subCollection.get();
-
-      const exercisesData = [];
-
-      exercisesDocs.forEach((exerciseDoc) => {
-        const exerciseId = exerciseDoc.id;
-        const exerciseData = exerciseDoc.data();
-
-        exercisesData.push({
-          id: exerciseId,
-          data: exerciseData
-        });
+    exercisesSnapshot.forEach((doc) => {
+      exercisesData.push({
+        id: doc.id,
+        data: doc.data()
       });
-
-      splitData[subCollectionName] = exercisesData;
-    }
-
-    allSplitsData[splitName] = splitData;
+    });
 
     return res.status(200).json({
-      message: `Daten für Tag ${day} erfolgreich abgerufen`,
+      message: `Daten für den Plan "${planName}" erfolgreich abgerufen`,
       success: true,
-      data: allSplitsData
+      data: exercisesData
     });
   } catch (error) {
     console.error('Fehler beim Abrufen der Daten:', error);
     return res.status(500).json({ message: 'Interner Serverfehler', success: false });
   }
 };
+
 
 
 const TrainingDataForDay = async (req, res) => {
