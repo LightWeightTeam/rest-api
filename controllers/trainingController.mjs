@@ -114,6 +114,69 @@ const TrainingData = async (req, res) => {
   }
 };
 
+const TrainingDataForDaySplitSelect = async (req, res) => {
+  try {
+    const { selectedGoal, selectedLevel, selectedSplit, day } = req.body;
+
+
+    if (!selectedGoal || !selectedLevel || !selectedSplit || !day) {
+      return { message: 'Fehlende Parameter', success: false };
+    }
+
+
+    const planRef = admin.firestore().collection('plan').doc(selectedGoal);
+    const selectedLevelRef = planRef.collection(selectedLevel).doc(selectedSplit);
+    const selectedSplitDoc = await selectedLevelRef.get();
+
+    if (!selectedSplitDoc.exists) {
+      return { message: 'Keine entsprechenden Daten gefunden', success: false };
+    }
+
+    const allSplitsData = {};
+    const splitData = {};
+    const splitName = selectedSplitDoc.id;
+
+    const daysRef = selectedSplitDoc.ref.collection('days');
+    const dayDoc = await daysRef.doc(day).get();
+
+    if (!dayDoc.exists) {
+      return { message: `Keine Daten für Tag ${day} gefunden`, success: false };
+    }
+
+    const subCollectionRef = await dayDoc.ref.listCollections();
+
+    for (const subCollection of subCollectionRef) {
+      const subCollectionName = subCollection.id;
+      const exercisesDocs = await subCollection.get();
+
+      const exercisesData = [];
+
+      exercisesDocs.forEach((exerciseDoc) => {
+        const exerciseId = exerciseDoc.id;
+        const exerciseData = exerciseDoc.data();
+
+        exercisesData.push({
+          id: exerciseId,
+          data: exerciseData
+        });
+      });
+
+      splitData[subCollectionName] = exercisesData;
+    }
+
+    allSplitsData[splitName] = splitData;
+
+    return res.status(200).json({
+      message: `Daten für Tag ${day} erfolgreich abgerufen`,
+      success: true,
+      data: allSplitsData
+    });
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Daten:', error);
+    return res.status(500).json({ message: 'Interner Serverfehler', success: false });
+  }
+};
+
 
 const TrainingDataForDay = async (req, res) => {
   try {
@@ -560,6 +623,7 @@ export default {
   saveTrainingDataToFirebase,
   TrainingDataFromFirebase,
   SplitNameForDay,
+  TrainingDataForDaySplitSelect,
 };
 
 

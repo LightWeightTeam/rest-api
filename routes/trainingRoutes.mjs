@@ -23,8 +23,9 @@ trainingrouter.post('/saveTrainingData',tokenController.authenticateToken, train
 trainingrouter.post('/TrainingData',tokenController.authenticateToken, trainingController.TrainingData);
 trainingrouter.post('/TrainingSplitData', tokenController.authenticateToken, trainingController.TrainingSplitData);
 trainingrouter.post('/TrainingDataForDay',tokenController.authenticateToken, trainingController.TrainingDataForDay);
+trainingrouter.post('/TrainingDataForDaySplitSelect', trainingController.TrainingDataForDaySplitSelect);
 trainingrouter.post('/TrainingDataFromFirebase',tokenController.authenticateToken, trainingController.TrainingDataFromFirebase);
-trainingrouter.post('/SplitNameForDay', trainingController.SplitNameForDay);
+trainingrouter.post('/SplitNameForDay',tokenController.authenticateToken, trainingController.SplitNameForDay);
 
 
 
