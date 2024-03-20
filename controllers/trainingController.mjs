@@ -462,6 +462,11 @@ const saveTrainingDataToFirebase = async (req, res) => {
     const splitRef = trainingRef.doc(splitName);
     const exerciseRef = splitRef.collection(exerciseID);
 
+    // Überprüfen, ob die Sammlungen und Dokumente vorhanden sind, und sie gegebenenfalls erstellen
+    await userRef.set({}, { merge: true });
+    await trainingRef.set({}, { merge: true });
+    await splitRef.set({}, { merge: true });
+
     // Iteriere über jedes Set und speichere es mit automatisch generierter ID
     for (const set of workoutData) {
       await exerciseRef.add({
@@ -476,6 +481,7 @@ const saveTrainingDataToFirebase = async (req, res) => {
     return res.status(500).json({ message: 'Interner Serverfehler', success: false });
   }
 }
+
 
 
 const TrainingDataFromFirebase = async (req, res) => {
