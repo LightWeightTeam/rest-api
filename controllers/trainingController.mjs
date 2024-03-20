@@ -474,11 +474,10 @@ const saveTrainingDataToFirebase = async (req, res) => {
     for (const set of workoutData) {
       await exerciseRef.doc(exerciseCounter.toString()).set({
         weight: set.weight,
-        rep: set.reps,
+        reps: set.reps,
       });
-      console.log(`Datensatz mit ID ${exerciseCounter} erfolgreich gespeichert`);
-      exerciseCounter++; // Erhöhe die Zähler für die nächste ID
     }
+    
 
     return res.status(200).json({ message: 'Daten erfolgreich gespeichert', success: true });
   } catch (error) {
