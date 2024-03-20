@@ -599,7 +599,7 @@ const SplitNameForDay = async (req, res) => {
 
 const getTrainingDataFromFirebase = async (req, res) => {
   try {
-    const { uid, selectedDate, splitName } = req.body;
+    const { uid, selectedDate, splitName, exercise} = req.body;
 
     if (!uid || !selectedDate || !splitName) {
       return res.status(400).json({ message: 'Fehlende Daten', success: false });
@@ -608,7 +608,7 @@ const getTrainingDataFromFirebase = async (req, res) => {
     const userRef = firebase.firestore().collection('users').doc(uid);
     const trainingRef = userRef.collection('training').doc('savedTraining');
     const splitRef = trainingRef.collection(selectedDate).doc(splitName);
-    const exerciseRef = splitRef.collection('exercise');
+    const exerciseRef = splitRef.collection(exercise);
 
     const snapshot = await exerciseRef.get();
     if (snapshot.empty) {
