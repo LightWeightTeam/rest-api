@@ -470,12 +470,17 @@ const saveTrainingDataToFirebase = async (req, res) => {
     const snapshot = await exerciseRef.get();
     const exerciseCounter = snapshot.size + 1;
 
+    // Initialisieren der Zählvariable außerhalb der Schleife
+    let currentCounter = exerciseCounter;
+
     // Iteriere über jedes Set und speichere es mit der entsprechenden ID
     for (const set of workoutData) {
-      await exerciseRef.doc(exerciseCounter.toString()).set({
+      await exerciseRef.doc(currentCounter.toString()).set({
         weight: set.weight,
         reps: set.reps,
       });
+      
+      currentCounter++; // Inkrementiere den Zähler für den nächsten Datensatz
     }
     
 
