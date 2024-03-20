@@ -442,7 +442,6 @@ const TrainingSplitData = async (req, res) => {
 };
 
 
-//Hier soll vielleicht noch überprüft werden ob savedTraining als Doc bereits exisitiert.
 const saveTrainingDataToFirebase = async (req, res) => {
   try {
     const {
@@ -467,13 +466,27 @@ const saveTrainingDataToFirebase = async (req, res) => {
     await trainingRef.set({}, { merge: true });
     await splitRef.set({}, { merge: true });
 
-    // Iteriere über jedes Set und speichere es mit automatisch generierter ID
-    for (const set of workoutData) {
-      await exerciseRef.add({
-        weight: set.weight,
-        rep: set.reps, // corrected property name from set.rep to set.reps
-      });
+    // Überprüfen, ob eine Zählvariable vorhanden ist, um die IDs der Übungen zu generieren
+    let exerciseCounter = 1;
+    const counterDoc = await userRef.collection('counters').doc('exerciseCounter').get();
+    if (counterDoc.exists) {
+      const counterData = counterDoc.data();
+      if (counterData && counterData.value) {
+        exerciseCounter = counterData.value;
+      }
     }
+
+    // Iteriere über jedes Set und speichere es mit der entsprechenden ID
+    for (const set of workoutData) {
+      await exerciseRef.doc(exerciseCounter.toString()).set({
+        weight: set.weight,
+        rep: set.reps,
+      });
+      exerciseCounter++;
+    }
+
+    // Aktualisiere die Zählvariable für die nächste Verwendung
+    await userRef.collection('counters').doc('exerciseCounter').set({ value: exerciseCounter });
 
     return res.status(200).json({ message: 'Daten erfolgreich gespeichert', success: true });
   } catch (error) {
