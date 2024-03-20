@@ -466,15 +466,9 @@ const saveTrainingDataToFirebase = async (req, res) => {
     await trainingRef.set({}, { merge: true });
     await splitRef.set({}, { merge: true });
 
-    // Überprüfen, ob eine Zählvariable vorhanden ist, um die IDs der Übungen zu generieren
-    let exerciseCounter = 1;
-    const counterDoc = await userRef.collection('counters').doc('exerciseCounter').get();
-    if (counterDoc.exists) {
-      const counterData = counterDoc.data();
-      if (counterData && counterData.value) {
-        exerciseCounter = counterData.value;
-      }
-    }
+    // Anzahl der vorhandenen Dokumente in der exerciseID-Sammlung abrufen
+    const snapshot = await exerciseRef.get();
+    const exerciseCounter = snapshot.size + 1;
 
     // Iteriere über jedes Set und speichere es mit der entsprechenden ID
     for (const set of workoutData) {
@@ -482,11 +476,7 @@ const saveTrainingDataToFirebase = async (req, res) => {
         weight: set.weight,
         rep: set.reps,
       });
-      exerciseCounter++;
     }
-
-    // Aktualisiere die Zählvariable für die nächste Verwendung
-    await userRef.collection('counters').doc('exerciseCounter').set({ value: exerciseCounter });
 
     return res.status(200).json({ message: 'Daten erfolgreich gespeichert', success: true });
   } catch (error) {
@@ -494,6 +484,7 @@ const saveTrainingDataToFirebase = async (req, res) => {
     return res.status(500).json({ message: 'Interner Serverfehler', success: false });
   }
 }
+
 
 
 
