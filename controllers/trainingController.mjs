@@ -447,14 +447,13 @@ const saveTrainingDataToFirebase = async (req, res) => {
   try {
     const {
       uid,
-      weight,
-      rep,
+      workoutData,
       exerciseID,
       splitName,
       selectedDate,
     } = req.body;
 
-    if (!uid || !weight || !rep || !exerciseID || !splitName || !selectedDate) {
+    if (!uid || !workoutData || !exerciseID || !splitName || !selectedDate) {
       return res.status(400).json({ message: 'Fehlende Daten', success: false });
     }
 
@@ -463,22 +462,13 @@ const saveTrainingDataToFirebase = async (req, res) => {
     const splitRef = trainingRef.doc(splitName);
     const exerciseRef = splitRef.collection(exerciseID);
 
-
-    const latestSetDoc = await exerciseRef.orderBy('set', 'desc').limit(1).get();
-    let nextSetNumber = 1;
-
-    if (!latestSetDoc.empty) {
-      const latestSetData = latestSetDoc.docs[0].data();
-      nextSetNumber = latestSetData.set + 1;
+    // Iteriere über jedes Set und speichere es mit automatisch generierter ID
+    for (const set of workoutData) {
+      await exerciseRef.add({
+        weight: set.weight,
+        rep: set.rep,
+      });
     }
-
-    const setRef = exerciseRef.doc(nextSetNumber.toString());
-
-    await setRef.set({
-      weight,
-      rep,
-      set: nextSetNumber,
-    });
 
     return res.status(200).json({ message: 'Daten erfolgreich gespeichert', success: true });
   } catch (error) {
@@ -486,6 +476,7 @@ const saveTrainingDataToFirebase = async (req, res) => {
     return res.status(500).json({ message: 'Interner Serverfehler', success: false });
   }
 }
+
 
 const TrainingDataFromFirebase = async (req, res) => {
   try {
