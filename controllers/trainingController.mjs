@@ -471,15 +471,13 @@ const saveTrainingDataToFirebase = async (req, res) => {
     const exerciseCounter = snapshot.size + 1;
 
     // Iteriere über jedes Set und speichere es mit der entsprechenden ID
-    for (let i = 0; i < workoutData.length; i++) {
-      const set = workoutData[i];
-      const newDataRef = await exerciseRef.add({
+    for (const set of workoutData) {
+      await exerciseRef.doc(exerciseCounter.toString()).set({
         weight: set.weight,
         rep: set.reps,
-        // Verwenden Sie exerciseCounter + i, um eine eindeutige ID für jeden Datensatz zu generieren
-        id: exerciseCounter + i
       });
-      console.log(`Datensatz ${i + 1} erfolgreich mit ID ${newDataRef.id} gespeichert`);
+      console.log(`Datensatz mit ID ${exerciseCounter} erfolgreich gespeichert`);
+      exerciseCounter++; // Erhöhe die Zähler für die nächste ID
     }
 
     return res.status(200).json({ message: 'Daten erfolgreich gespeichert', success: true });
@@ -488,6 +486,7 @@ const saveTrainingDataToFirebase = async (req, res) => {
     return res.status(500).json({ message: 'Interner Serverfehler', success: false });
   }
 }
+
 
 
 
