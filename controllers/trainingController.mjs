@@ -458,8 +458,8 @@ const saveTrainingDataToFirebase = async (req, res) => {
     }
 
     const userRef = firebase.firestore().collection('users').doc(uid);
-    const trainingRef = userRef.collection('training').doc('savedTraining').collection(selectedDate);
-    const splitRef = trainingRef.doc(splitName);
+    const trainingRef = userRef.collection('training').doc('savedTraining');
+    const splitRef = trainingRef.collection(selectedDate).doc(splitName);
     const exerciseRef = splitRef.collection(exerciseID);
 
     // Überprüfen, ob die Sammlungen und Dokumente vorhanden sind, und sie gegebenenfalls erstellen
@@ -471,7 +471,7 @@ const saveTrainingDataToFirebase = async (req, res) => {
     for (const set of workoutData) {
       await exerciseRef.add({
         weight: set.weight,
-        rep: set.rep,
+        rep: set.reps, // corrected property name from set.rep to set.reps
       });
     }
 
@@ -481,6 +481,7 @@ const saveTrainingDataToFirebase = async (req, res) => {
     return res.status(500).json({ message: 'Interner Serverfehler', success: false });
   }
 }
+
 
 
 
