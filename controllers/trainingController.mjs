@@ -599,9 +599,9 @@ const SplitNameForDay = async (req, res) => {
 
 const getTrainingDataFromFirebase = async (req, res) => {
   try {
-    const { uid, selectedDate, splitName, exercise} = req.body;
+    const { uid, selectedDate, splitName, exercise } = req.body;
 
-    if (!uid || !selectedDate || !splitName) {
+    if (!uid || !selectedDate || !splitName || !exercise) {
       return res.status(400).json({ message: 'Fehlende Daten', success: false });
     }
 
@@ -619,18 +619,19 @@ const getTrainingDataFromFirebase = async (req, res) => {
 
     snapshot.forEach(doc => {
       let exerciseSets = [];
-      doc.ref.collection('sets').orderBy(firebase.firestore.FieldPath.documentId()).get().then(snapshot => {
-        snapshot.forEach(setDoc => {
-          const setNumber = setDoc.id.replace('Set ', '');
-          const set = {
-            reps: setDoc.data().reps,
-            weight: setDoc.data().weight
-          };
-          exerciseSets[parseInt(setNumber) - 1] = set;
-        });
-      });
+
+      // Der Name des Dokuments (z. B. "1", "2", "3") wird verwendet, um die Sets zu identifizieren
+      const setNumber = doc.id;
+
+      const set = {
+        reps: doc.data().reps,
+        weight: doc.data().weight
+      };
+      exerciseSets.push(set);
+
       trainingData.push({
-        sets: exerciseSets.filter(Boolean)
+        sets: exerciseSets,
+        setNumber: setNumber
       });
     });
 
@@ -640,6 +641,7 @@ const getTrainingDataFromFirebase = async (req, res) => {
     return res.status(500).json({ message: 'Interner Serverfehler', success: false });
   }
 }
+
 
 
 export default {
