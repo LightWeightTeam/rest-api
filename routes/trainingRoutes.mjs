@@ -22,7 +22,7 @@ trainingrouter.post('/saveTrainingDataToFirebase',tokenController.authenticateTo
 trainingrouter.post('/saveTrainingData',tokenController.authenticateToken, trainingController.saveTrainingData);
 trainingrouter.post('/TrainingData',tokenController.authenticateToken, trainingController.TrainingData);
 trainingrouter.post('/TrainingSplitData', tokenController.authenticateToken, trainingController.TrainingSplitData);
-trainingrouter.post('/TrainingDataForDay',tokenController.authenticateToken, trainingController.TrainingDataForDay);
+trainingrouter.post('/TrainingDataForDay', trainingController.TrainingDataForDay);
 trainingrouter.post('/TrainingDataForDaySplitSelect', trainingController.TrainingDataForDaySplitSelect);
 trainingrouter.post('/TrainingDataFromFirebase',tokenController.authenticateToken, trainingController.TrainingDataFromFirebase);
 trainingrouter.post('/SplitNameForDay',tokenController.authenticateToken, trainingController.SplitNameForDay);
