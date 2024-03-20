@@ -26,7 +26,7 @@ trainingrouter.post('/TrainingDataForDay', trainingController.TrainingDataForDay
 trainingrouter.post('/TrainingDataForDaySplitSelect', trainingController.TrainingDataForDaySplitSelect);
 trainingrouter.post('/TrainingDataFromFirebase',tokenController.authenticateToken, trainingController.TrainingDataFromFirebase);
 trainingrouter.post('/SplitNameForDay',tokenController.authenticateToken, trainingController.SplitNameForDay);
-
+trainingrouter.post('/getTrainingDataFromFirebase', trainingController.getTrainingDataFromFirebase);
 
 
 export default trainingrouter;

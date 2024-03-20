@@ -597,6 +597,49 @@ const SplitNameForDay = async (req, res) => {
 };
 
 
+const getTrainingDataFromFirebase = async (req, res) => {
+  try {
+    const { uid, selectedDate, splitName } = req.body;
+
+    if (!uid || !selectedDate || !splitName) {
+      return res.status(400).json({ message: 'Fehlende Daten', success: false });
+    }
+
+    const userRef = firebase.firestore().collection('users').doc(uid);
+    const trainingRef = userRef.collection('training').doc('savedTraining');
+    const splitRef = trainingRef.collection(selectedDate).doc(splitName);
+    const exerciseRef = splitRef.collection('exercise');
+
+    const snapshot = await exerciseRef.get();
+    if (snapshot.empty) {
+      return res.status(404).json({ message: 'Keine Daten gefunden', success: false });
+    }
+
+    let trainingData = [];
+
+    snapshot.forEach(doc => {
+      let exerciseSets = [];
+      doc.ref.collection('sets').orderBy(firebase.firestore.FieldPath.documentId()).get().then(snapshot => {
+        snapshot.forEach(setDoc => {
+          const setNumber = setDoc.id.replace('Set ', '');
+          const set = {
+            reps: setDoc.data().reps,
+            weight: setDoc.data().weight
+          };
+          exerciseSets[parseInt(setNumber) - 1] = set;
+        });
+      });
+      trainingData.push({
+        sets: exerciseSets.filter(Boolean)
+      });
+    });
+
+    return res.status(200).json({ data: trainingData, success: true });
+  } catch (error) {
+    console.error('Fehler beim Laden der Daten:', error);
+    return res.status(500).json({ message: 'Interner Serverfehler', success: false });
+  }
+}
 
 
 export default {
@@ -609,6 +652,7 @@ export default {
   TrainingDataFromFirebase,
   SplitNameForDay,
   TrainingDataForDaySplitSelect,
+  getTrainingDataFromFirebase,
 };
 
 
